@@ -30,7 +30,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const getCatOfTheDayVideo = async (req, res) => {
   console.log('getCatOfTheDayVideo');
   //const { videoName } = req.body;
-  const videoName = 'Test3.mp4';
+  const videoName = 'cotd.mp4';
 
   try {
     // Construct an absolute path for the video file
