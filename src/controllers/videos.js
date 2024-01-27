@@ -34,7 +34,7 @@ export const getCatOfTheDayVideo = async (req, res) => {
 
   try {
     // Construct an absolute path for the video file
-    const videoPath = join(__dirname, '..', 'assets', 'videos', videoName);
+    const videoPath = join(__dirname, '..', 'assets', 'videos', 'cotd', videoName);
     console.log('Video path:', videoPath); // Log the path for debugging
 
     const stat = fs.statSync(videoPath);
