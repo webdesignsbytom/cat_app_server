@@ -1,24 +1,15 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dbClient from '../utils/dbClient.js';
+// File paths
+import fs from 'fs'; // Make sure fs is imported
+import { join, dirname } from 'path'; // Import join and dirname
+import { fileURLToPath } from 'url'; // Import fileURLToPath for __dirname
 // Components
-import { createVerificationInDB, createPasswordResetInDB } from './utils.js';
 // Emitters
 import { myEmitterUsers } from '../event/userEvents.js';
 import { myEmitterErrors } from '../event/errorEvents.js';
-import {
-  findAllUsers,
-  findUserByEmail,
-  createUser,
-  findVerification,
-  findResetRequest,
-  findUserById,
-  resetUserPassword,
-  deleteUserById,
-  updateUserById,
-  findUsersByRole,
-} from '../domain/users.js';
-import { createAccessToken } from '../utils/tokens.js';
+// Domain
 // Response messages
 import {
   EVENT_MESSAGES,
@@ -33,21 +24,20 @@ import {
   ServerConflictError,
   BadRequestEvent,
 } from '../event/utils/errorUtils.js';
-// Time
-import { v4 as uuid } from 'uuid';
-
-// Password hash
-const hashRate = 8;
+// Dir
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getCatOfTheDayVideo = async (req, res) => {
   console.log('getCatOfTheDayVideo');
-  const { videoName } = req.body;
+  //const { videoName } = req.body;
+  const videoName = 'Test3.mp4';
 
   try {
-    const videoPath = join(__dirname, 'assets', 'videos', videoName);
+    // Construct an absolute path for the video file
+    const videoPath = join(__dirname, '..', 'assets', 'videos', videoName);
+    console.log('Video path:', videoPath); // Log the path for debugging
 
     const stat = fs.statSync(videoPath);
-
     const fileSize = stat.size;
     const range = req.headers.range;
 
@@ -55,7 +45,6 @@ export const getCatOfTheDayVideo = async (req, res) => {
       const parts = range.replace(/bytes=/, '').split('-');
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-
       const chunksize = end - start + 1;
       const file = fs.createReadStream(videoPath, { start, end });
 
@@ -77,13 +66,16 @@ export const getCatOfTheDayVideo = async (req, res) => {
       res.writeHead(200, head);
       fs.createReadStream(videoPath).pipe(res);
     }
-
-    return sendDataResponse(res, 200, { video: foundVideo });
   } catch (err) {
-    // Error
-    const serverError = new ServerErrorEvent(req.user, `Get all users`);
-    myEmitterErrors.emit('error', serverError);
-    sendMessageResponse(res, serverError.code, serverError.message);
-    throw err;
+    // Enhanced error handling
+    if (err.code === 'ENOENT') {
+      console.error('File not found:', videoPath);
+      return res.status(404).send('File not found');
+    } else {
+      const serverError = new ServerErrorEvent(req.user, 'Get all users');
+      myEmitterErrors.emit('error', serverError);
+      sendMessageResponse(res, serverError.code, serverError.message);
+      throw err;
+    }
   }
 };
