@@ -5,13 +5,19 @@ import morgan from 'morgan';
 // Path
 import { join } from 'path';
 import * as url from 'url';
+// File controls 
+import fs from 'fs'; // Import fs module for file operations
 // Import routers
 import authRouter from './routes/auth.js';
 import eventRouter from './routes/events.js';
 import userRouter from './routes/users.js';
+import videoRouter from './routes/videos.js';
 
 const app = express();
 app.disable('x-powered-by');
+
+const fileContents = fs.readFileSync("src/assets/files/file.txt", 'utf8');
+console.log('file contents: ' + fileContents);
 
 // Add middleware
 app.use(
@@ -35,6 +41,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 app.use('/', authRouter);
 app.use('/events', eventRouter);
 app.use('/users', userRouter);
+app.use('/videos', videoRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
