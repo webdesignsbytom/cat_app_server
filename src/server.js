@@ -16,9 +16,6 @@ import videoRouter from './routes/videos.js';
 const app = express();
 app.disable('x-powered-by');
 
-const fileContents = fs.readFileSync("src/assets/files/file.txt", 'utf8');
-console.log('file contents: ' + fileContents);
-
 // Add middleware
 app.use(
   cors({ 
