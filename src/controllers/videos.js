@@ -28,14 +28,11 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getCatOfTheDayVideo = async (req, res) => {
-  console.log('getCatOfTheDayVideo');
-  //const { videoName } = req.body;
-  const videoName = 'cat_video1.mp4';
+  const videoName = 'test.mp4';
 
   try {
     // Construct an absolute path for the video file
     const videoPath = join(__dirname, '..', 'assets', 'videos', 'cotd', videoName);
-    console.log('Video path:', videoPath); // Log the path for debugging
 
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
@@ -72,7 +69,7 @@ export const getCatOfTheDayVideo = async (req, res) => {
       console.error('File not found:', videoPath);
       return res.status(404).send('File not found');
     } else {
-      const serverError = new ServerErrorEvent(req.user, 'Get all users');
+      const serverError = new ServerErrorEvent(req.user, 'Cat of the day server error');
       myEmitterErrors.emit('error', serverError);
       sendMessageResponse(res, serverError.code, serverError.message);
       throw err;
