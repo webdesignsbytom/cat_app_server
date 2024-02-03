@@ -12,6 +12,7 @@ import authRouter from './routes/auth.js';
 import eventRouter from './routes/events.js';
 import userRouter from './routes/users.js';
 import videoRouter from './routes/videos.js';
+import imageRouter from './routes/images.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -39,6 +40,7 @@ app.use('/', authRouter);
 app.use('/events', eventRouter);
 app.use('/users', userRouter);
 app.use('/videos', videoRouter);
+app.use('/images', imageRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
