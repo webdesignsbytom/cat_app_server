@@ -32,7 +32,14 @@ export const getCatOfTheDayVideo = async (req, res) => {
 
   try {
     // Construct an absolute path for the video file
-    const videoPath = join(__dirname, '..', 'assets', 'videos', 'cotd', videoName);
+    const videoPath = join(
+      __dirname,
+      '..',
+      'assets',
+      'videos',
+      'cotd',
+      videoName
+    );
 
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
@@ -69,10 +76,27 @@ export const getCatOfTheDayVideo = async (req, res) => {
       console.error('File not found:', videoPath);
       return res.status(404).send('File not found');
     } else {
-      const serverError = new ServerErrorEvent(req.user, 'Cat of the day server error');
+      const serverError = new ServerErrorEvent(
+        req.user,
+        'Cat of the day server error'
+      );
       myEmitterErrors.emit('error', serverError);
       sendMessageResponse(res, serverError.code, serverError.message);
       throw err;
     }
+  }
+};
+
+export const uploadNewCatOfTheDayVideo = async (req, res) => {
+  console.log('uploadNewCatOfTheDayVideo');
+
+  try {
+    return sendDataResponse(res, 200, {  });
+  } catch (err) {
+    // Error
+    const serverError = new ServerErrorEvent(req.user, `Video server error`);
+    myEmitterErrors.emit('error', serverError);
+    sendMessageResponse(res, serverError.code, serverError.message);
+    throw err;
   }
 };
