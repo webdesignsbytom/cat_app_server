@@ -25,6 +25,16 @@ model User {
   updatedAt      DateTime? @updatedAt
 }
 
+model CotdVideo {
+  id       String @id @default("cotd-video-num")
+  idNumber Int    @default(1)
+}
+
+model EndlessCatsVideo {
+  id       String @id @default("endless-cats-video-num")
+  idNumber Int    @default(1)
+}
+
 // EVENTS
 enum EventType {
   ERROR
