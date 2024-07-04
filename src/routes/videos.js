@@ -1,13 +1,16 @@
 import { Router } from 'express';
-// Controllers
-import { getCatOfTheDayVideo, uploadNewCatOfTheDayVideo } from '../controllers/videos.js';
-// Auth
-import { validateAuthentication, validateAdminRole } from '../middleware/auth.js';
+import {
+  getMainVideo,
+  getNextMainVideo,
+  getPreviousMainVideo,
+  uploadMainVideo,
+} from '../controllers/videos.js';
 
 const router = Router();
 
-// Routes
-router.get('/cat-of-the-day', getCatOfTheDayVideo);
-router.post('/upload/cat-of-the-day-video', uploadNewCatOfTheDayVideo);
+router.get('/video', getMainVideo);
+router.get('/next-video', getNextMainVideo);
+router.get('/previous-video', getPreviousMainVideo);
+router.post('/upload-video', uploadMainVideo);
 
 export default router;

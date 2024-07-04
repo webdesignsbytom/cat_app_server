@@ -41,6 +41,7 @@ const hashRate = 8;
 
 export const getAllUsers = async (req, res) => {
   console.log('getAllUsers');
+  
   try {
     const foundUsers = await findAllUsers();
     if (!foundUsers) {

@@ -1,51 +1,40 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
-// Path
-import { join } from 'path';
+import path from 'path';
 import * as url from 'url';
-// File controls 
-import fs from 'fs'; // Import fs module for file operations
-// Import routers
-import authRouter from './routes/auth.js';
-import eventRouter from './routes/events.js';
-import userRouter from './routes/users.js';
+import { join } from 'path';
+// Routes
 import videoRouter from './routes/videos.js';
-import imageRouter from './routes/images.js';
+import adminRouter from './routes/admin.js';
 
 const app = express();
 app.disable('x-powered-by');
 
 // Add middleware
-app.use(
-  cors({ 
-    origin: "*"
-  })
-);
-
-app.use(morgan('dev'));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Set the port and URl
-const PORT = process.env.PORT
-const HTTP_URL = process.env.HTTP_URL
+const PORT = process.env.PORT || 4000;
 
-// Create path to HTML
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+// Get the directory name
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Start of actions
-app.use('/', authRouter);
-app.use('/events', eventRouter);
-app.use('/users', userRouter);
+// Routes
 app.use('/videos', videoRouter);
-app.use('/images', imageRouter);
+app.use('/admin', adminRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
   res.sendFile('index.html', {
     root: join(__dirname, 'views'),
+  });
+});
+
+app.get('/test', (req, res) => {
+  return res.status(200).json({
+      message: 'look out radioactive man'
   });
 });
 
@@ -61,17 +50,6 @@ app.all('*', (req, res) => {
   }
 });
 
-app.use((error, req, res, next) => {
-  console.error(error)
-  if (error.code === 'P2025') {
-    return sendDataResponse(res, 404, 'Record does not exist')
-  }
-  return sendDataResponse(res, 500)
-})
-
-// Start our API server
 app.listen(PORT, () => {
-  console.log(
-    `\nServer is running on ${HTTP_URL}${PORT} \n This no longer consumes souls\n`
-  );
+  console.log(`\nServer is running on http://localhost:${PORT} \nThis no longer consumes souls.`);
 });
