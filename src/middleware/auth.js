@@ -10,9 +10,7 @@ import { NoPermissionEvent, NoValidationEvent } from '../event/utils/errorUtils.
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js';
 
 export async function validateAdminRole(req, res, next) {
-  console.log('ADMIN_ROLE', req.user);
   const { role } = req.user
-  console.log('role', role);
 
   if (!req.user) {
     const error = new NoValidationEvent(
@@ -24,15 +22,12 @@ export async function validateAdminRole(req, res, next) {
   }
 
   if (role !== 'ADMIN' && role !== 'DEVELOPER') {
-    console.log('XXXXX', role);
     const noPermission = new NoPermissionEvent(req.user, 'perform-admin-action')
     myEmitterErrors.emit('error', noPermission)
     return sendDataResponse(res, noPermission.code, {
       authorization: noPermission.message
     })
   }
-
-  console.log('WIN');
   next()
 }
 

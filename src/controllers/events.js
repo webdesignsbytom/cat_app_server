@@ -1,8 +1,8 @@
 // Emitters
 import { myEmitterErrors } from '../event/errorEvents.js';
-import { myEmitterEvents } from '../event/eventsLog.js';
+import { myEmitterEvents } from '../event/eventEvents.js';
 // Domain
-import { findAllEvents } from '../domain/events.js';
+import { deleteAllEventsFromDB, deleteEventId, findAllEvents } from '../domain/events.js';
 // Response messages
 import { EVENT_MESSAGES, sendDataResponse, sendMessageResponse } from '../utils/responses.js';
 import {
@@ -35,11 +35,45 @@ export const getAllEvents = async (req, res) => {
       event.createdAt = createdDate;
       event.updatedAt = updatedDate;
     });
-    // // myEmitterEvents.emit('get-all-events', req.user);
+
+    myEmitterEvents.emit('get-all-events', req.user);
     return sendDataResponse(res, 200, { events: foundEvents });
   } catch (err) {
     //
     const serverError = new ServerErrorEvent(req.user, `Get all events`);
+    myEmitterErrors.emit('error', serverError);
+    sendMessageResponse(res, serverError.code, serverError.message);
+    throw err;
+  }
+};
+
+export const deleteEventById = async (req, res) => {
+  const { eventId } = req.params
+
+  try {
+    const deletedEvent = await deleteEventId(eventId);
+
+    myEmitterEvents.emit('delete-event-by-id', req.user);
+    return sendDataResponse(res, 200, { event: deletedEvent });
+  } catch (err) {
+    //
+    const serverError = new ServerErrorEvent(req.user, `Delete all events`);
+    myEmitterErrors.emit('error', serverError);
+    sendMessageResponse(res, serverError.code, serverError.message);
+    throw err;
+  }
+};
+export const deleteAllEvents = async (req, res) => {
+  console.log('get all events');
+
+  try {
+    await deleteAllEventsFromDB();
+
+    myEmitterEvents.emit('delete-all-events', req.user);
+    return sendDataResponse(res, 200, { events: "Deleted" });
+  } catch (err) {
+    //
+    const serverError = new ServerErrorEvent(req.user, `Delete all events`);
     myEmitterErrors.emit('error', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;

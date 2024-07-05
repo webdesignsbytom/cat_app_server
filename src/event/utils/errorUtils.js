@@ -1,7 +1,7 @@
 // Response strings
 import { RESPONSE_MESSAGES } from '../../utils/responses.js';
 // Error event creation functions
-import { createErrorEvent } from './event.js';
+import { createErrorEvent } from './events.js';
 
 // Exported error event creation functions
 export const createGenericErrorEvent = async (errorEvent) => {

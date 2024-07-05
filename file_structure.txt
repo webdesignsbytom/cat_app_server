@@ -1,0 +1,135 @@
+.
+|____.env
+|____.env.example
+|____.gitignore
+|____file_structure.txt
+|____insomnia
+|____package-lock.json
+|____package.json
+|____prisma
+| |____migrations
+| | |____20231105225154_init
+| | | |____migration.sql
+| | |____migration_lock.toml
+| |____schema.prisma
+| |____seed.js
+|____README.md
+|____src
+| |____assets
+| | |____images
+| | | |____Ai
+| | | | |____cat_ai_image_1.png
+| | | | |____cat_ai_image_10.png
+| | | | |____cat_ai_image_11.png
+| | | | |____cat_ai_image_12.png
+| | | | |____cat_ai_image_13.png
+| | | | |____cat_ai_image_14.png
+| | | | |____cat_ai_image_15.png
+| | | | |____cat_ai_image_16.png
+| | | | |____cat_ai_image_17.png
+| | | | |____cat_ai_image_18.png
+| | | | |____cat_ai_image_19.png
+| | | | |____cat_ai_image_2.png
+| | | | |____cat_ai_image_20.png
+| | | | |____cat_ai_image_21.png
+| | | | |____cat_ai_image_22.png
+| | | | |____cat_ai_image_23.png
+| | | | |____cat_ai_image_24.png
+| | | | |____cat_ai_image_25.png
+| | | | |____cat_ai_image_26.png
+| | | | |____cat_ai_image_27.png
+| | | | |____cat_ai_image_28.png
+| | | | |____cat_ai_image_29.png
+| | | | |____cat_ai_image_3.png
+| | | | |____cat_ai_image_30.png
+| | | | |____cat_ai_image_31.png
+| | | | |____cat_ai_image_32.png
+| | | | |____cat_ai_image_33.png
+| | | | |____cat_ai_image_34.png
+| | | | |____cat_ai_image_35.png
+| | | | |____cat_ai_image_36.png
+| | | | |____cat_ai_image_37.png
+| | | | |____cat_ai_image_38.png
+| | | | |____cat_ai_image_39.png
+| | | | |____cat_ai_image_4.png
+| | | | |____cat_ai_image_40.png
+| | | | |____cat_ai_image_41.png
+| | | | |____cat_ai_image_42.png
+| | | | |____cat_ai_image_43.png
+| | | | |____cat_ai_image_44.png
+| | | | |____cat_ai_image_45.png
+| | | | |____cat_ai_image_46.png
+| | | | |____cat_ai_image_47.png
+| | | | |____cat_ai_image_5.png
+| | | | |____cat_ai_image_6.png
+| | | | |____cat_ai_image_7.png
+| | | | |____cat_ai_image_8.png
+| | | | |____cat_ai_image_9.png
+| | |____videos
+| | | |____cotd
+| | | | |____cat1.mp4
+| | | | |____cat_video1.mp4
+| | | | |____cotd.mp4
+| | | | |____test.mp4
+| | | |____endlessCats
+| | | | |____cat1.mp4
+| | | |____therapyMode
+| | | | |____therapy1.mp4
+| |____controllers
+| | |____admin.js
+| | |____auth.js
+| | |____events.js
+| | |____images.js
+| | |____users.js
+| | |____utils.js
+| | |____videos.js
+| |____domain
+| | |____events.js
+| | |____users.js
+| |____event
+| | |____adminEvents.js
+| | |____errorEvents.js
+| | |____eventsLog.js
+| | |____userEvents.js
+| | |____utils
+| | | |____adminUtils.js
+| | | |____errorUtils.js
+| | | |____eventLogUtils.js
+| | | |____events.js
+| | | |____userUtils.js
+| |____media
+| | |____compressed
+| | | |____1718827609082-compressed.mp4
+| | | |____1718827753523-compressed.mp4
+| | | |____1718827825631-compressed.mp4
+| | | |____1718827868190-compressed.mp4
+| | | |____1718827903169-compressed.mp4
+| | | |____1718827960253-compressed.mp4
+| | | |____1718827979164-compressed.mp4
+| | | |____1718828143855-compressed.mp4
+| | | |____1718828165218-compressed.mp4
+| | | |____1718828192266-compressed.mp4
+| | | |____1718828217734-compressed.mp4
+| | | |____1718828326195-compressed.mp4
+| | | |____1718828341740-compressed.mp4
+| | |____uploads
+| | | |____upload1.mp4
+| |____middleware
+| | |____auth.js
+| |____routes
+| | |____admin.js
+| | |____auth.js
+| | |____events.js
+| | |____images.js
+| | |____users.js
+| | |____videos.js
+| |____server.js
+| |____utils
+| | |____config.js
+| | |____dbClient.js
+| | |____eventEmitter.js
+| | |____responses.js
+| | |____tokens.js
+| |____views
+| | |____404.html
+| | |____index.html

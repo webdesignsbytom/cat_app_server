@@ -1,4 +1,4 @@
-import { createEvent } from './event.js';
+import { createEvent } from './events.js';
 
 // Exported event creation functions
 export const createGetAllEvent = async (user) => {
