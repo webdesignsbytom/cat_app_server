@@ -8,6 +8,7 @@ import { join } from 'path';
 import videoRouter from './routes/videos.js';
 import adminRouter from './routes/admin.js';
 import eventRouter from './routes/events.js';
+import userRouter from './routes/users.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -26,17 +27,12 @@ const __dirname = path.dirname(__filename);
 app.use('/videos', videoRouter);
 app.use('/admin', adminRouter);
 app.use('/event', eventRouter);
+app.use('/user', userRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
   res.sendFile('index.html', {
     root: join(__dirname, 'views'),
-  });
-});
-
-app.get('/test', (req, res) => {
-  return res.status(200).json({
-      message: 'look out radioactive man'
   });
 });
 

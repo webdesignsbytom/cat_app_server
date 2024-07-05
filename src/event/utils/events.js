@@ -24,7 +24,6 @@ export const createEvent = async (user, type, topic, content, code) => {
 export const createErrorEvent = async (errorEvent, additionalContent = '') => {
     try {
       const userId = errorEvent.user?.id || 'Visitor';
-      const userEmail = errorEvent.user?.email || 'Unknown';
       const codeId = errorEvent.code || 'Unknown';
       const content = `${errorEvent.code} ${errorEvent.message} ${additionalContent}`;
   

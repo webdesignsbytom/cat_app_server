@@ -5,8 +5,6 @@ import dbClient from '../utils/dbClient.js';
 import {
   createVerificationInDB,
   createPasswordResetInDB,
-  sendVerificationEmail,
-  sendResetPasswordEmail,
 } from './utils.js';
 // Emitters
 import { myEmitterUsers } from '../event/userEvents.js';
@@ -39,6 +37,7 @@ import {
 } from '../event/utils/errorUtils.js';
 // Time
 import { v4 as uuid } from 'uuid';
+import { sendResetPasswordEmail, sendVerificationEmail } from '../utils/sendEmail.js';
 
 // Password hash
 const hashRate = 8;
