@@ -1,10 +1,19 @@
+import path from 'path';
+import * as url from 'url';
 // Responses
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js';
 // Errors
 import { ServerErrorEvent } from '../event/utils/errorUtils.js';
 
+// Get the directory name
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Video paths
+const uploadDirectory = path.join(__dirname, '..', 'media', 'uploads');
+const compressedDirectory = path.join(__dirname, '..', 'media', 'compressed');
+
 export const getTestData = async (req, res) => {
-  console.log('getTestData');
   try {
     return sendDataResponse(res, 200, {
       message: 'The Tulips bloom in Paris on Thursdays',
@@ -86,10 +95,67 @@ export const getNextVideoToReview = async (req, res) => {
 export const deleteVideoToReview = async (req, res) => {
   console.log('deleteVideoToReview');
   try {
-    return sendDataResponse(res, 200, { message: 'deleteVideoToReview' });
+    const { videoName } = req.params;
+    const videoPath = path.join(uploadDirectory, videoName);
+
+    if (!fs.existsSync(videoPath)) {
+      return res.status(404).send('Video not found');
+    }
+
+    fs.unlinkSync(videoPath);
+    return sendDataResponse(res, 200, { message: 'Video deleted successfully' });
   } catch (err) {
-    // Error
-    sendMessageResponse(res, 500, 'Internal server error!');
+    const serverError = new ServerErrorEvent('Error deleting video');
+    myEmitterErrors.emit('error', serverError);
+    sendMessageResponse(res, serverError.code, serverError.message);
+    throw err;
+  }
+};
+
+export const approveVideoToReview = async (req, res) => {
+  console.log('approveVideoToReview');
+  try {
+    const { videoName } = req.params;
+    const uploadVideoPath = path.join(uploadDirectory, videoName);
+    const compressedVideoPath = path.join(compressedDirectory, videoName);
+
+    if (!fs.existsSync(uploadVideoPath)) {
+      return res.status(404).send('Video not found');
+    }
+
+    // Move video to compressed directory
+    fs.renameSync(uploadVideoPath, compressedVideoPath);
+
+    // Get video metadata using ffmpeg
+    ffmpeg.ffprobe(compressedVideoPath, async (err, metadata) => {
+      if (err) {
+        const serverError = new ServerErrorEvent('Error getting video metadata');
+        myEmitterErrors.emit('error', serverError);
+        return sendMessageResponse(res, serverError.code, serverError.message);
+      }
+
+      // Save metadata to the database
+      const { format, streams } = metadata;
+      const videoStream = streams.find(stream => stream.codec_type === 'video');
+      
+      await dbClient.video.create({
+        data: {
+          name: videoName,
+          path: compressedVideoPath,
+          size: format.size,
+          duration: format.duration,
+          codec: videoStream.codec_name,
+          width: videoStream.width,
+          height: videoStream.height,
+        },
+      });
+
+      return sendDataResponse(res, 200, { message: 'Video approved and moved successfully' });
+    });
+  } catch (err) {
+    const serverError = new ServerErrorEvent('Error approving video');
+    myEmitterErrors.emit('error', serverError);
+    sendMessageResponse(res, serverError.code, serverError.message);
     throw err;
   }
 };

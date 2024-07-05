@@ -25,14 +25,26 @@ model User {
   updatedAt      DateTime? @updatedAt
 }
 
-model CotdVideo {
-  id       String @id @default("cotd-video-num")
-  idNumber Int    @default(1)
+enum VideoType {
+  COTD
+  GENERAL
+  THERAPY
+  PENDING
+  APPROVED
 }
 
-model EndlessCatsVideo {
-  id       String @id @default("endless-cats-video-num")
-  idNumber Int    @default(1)
+model Video {
+  id        Int       @id @default(autoincrement())
+  name      String
+  videoType VideoType @default(PENDING)
+  path      String
+  size      Int
+  duration  Float
+  codec     String
+  width     Int
+  height    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 // EVENTS

@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import * as url from 'url';
 import { join } from 'path';
+
 // Routes
 import videoRouter from './routes/videos.js';
 import adminRouter from './routes/admin.js';
@@ -17,7 +18,7 @@ app.disable('x-powered-by');
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
@@ -49,5 +50,5 @@ app.all('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\nServer is running on http://localhost:${PORT} \nThis no longer consumes souls.`);
+  console.log(`\nServer is running on localhost:${PORT} \nThis no longer consumes souls.`);
 });
