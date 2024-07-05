@@ -7,6 +7,7 @@ import { join } from 'path';
 // Routes
 import videoRouter from './routes/videos.js';
 import adminRouter from './routes/admin.js';
+import eventRouter from './routes/events.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -24,6 +25,7 @@ const __dirname = path.dirname(__filename);
 // Routes
 app.use('/videos', videoRouter);
 app.use('/admin', adminRouter);
+app.use('/event', eventRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
