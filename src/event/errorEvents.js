@@ -1,11 +1,11 @@
 import { myEmitter } from '../utils/eventEmitter.js';
-import { createErrorEvent, createLoginErrorEvent, createResendVerifyErrorEvent } from './utils/errorUtils.js'
+import { createGenericErrorEvent, createLoginErrorEvent, createResendVerifyErrorEvent } from './utils/errorUtils.js'
 
 export const myEmitterErrors = myEmitter
 
 myEmitterErrors.on('error', async (error) => {
   console.log('ERROR EVENT', error);
-  createErrorEvent(error)
+  createGenericErrorEvent(error)
 });
 
 myEmitterErrors.on('error-login', async (error) => {

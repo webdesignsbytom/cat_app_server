@@ -1,24 +1,4 @@
-import dbClient from '../../utils/dbClient.js';
-import { myEmitterErrors } from '../errorEvents.js';
-import { CreateEventError } from './errorUtils.js';
-
-const createEvent = async (user, type, topic, content, code) => {
-  try {
-    await dbClient.event.create({
-      data: {
-        type,
-        topic,
-        content,
-        createdById: user.id,
-        code,
-      },
-    });
-  } catch (err) {
-    const error = new CreateEventError(user.id, topic);
-    myEmitterErrors.emit('error', error);
-    throw err;
-  }
-};
+import { createEvent } from './event.js';
 
 // Exported event creation functions
 export const createGetAllEvent = async (user) => {

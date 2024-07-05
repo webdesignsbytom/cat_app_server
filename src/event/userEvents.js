@@ -6,7 +6,9 @@ import {
   createNewVerifyEvent,
   createPasswordResetEvent,
   createDeleteUserEvent,
-  createUpdateUserEvent
+  createUpdateUserEvent,
+  createDeactivateUserEvent,
+  createReactivateUserEvent
 } from './utils/userUtils.js';
 
 export const myEmitterUsers = myEmitter;
@@ -19,6 +21,6 @@ myEmitterUsers.on('resend-verification', async (user) => createNewVerifyEvent(us
 myEmitterUsers.on('password-reset', async (user) => createPasswordResetEvent(user));
 myEmitterUsers.on('update-user', async (user) => createUpdateUserEvent(user));
 myEmitterUsers.on('change-role', async (user) => createChangeUserRoleEvent(user));
-myEmitterUsers.on('deactivate-user', async (user) => createActivateUserEvent(user));
+myEmitterUsers.on('deactivate-user', async (user) => createDeactivateUserEvent(user));
 myEmitterUsers.on('reactivate-user', async (user) => createReactivateUserEvent(user));
 myEmitterUsers.on('deleted-user', async (user) => createDeleteUserEvent(user));

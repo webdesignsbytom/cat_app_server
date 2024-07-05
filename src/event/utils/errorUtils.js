@@ -1,29 +1,7 @@
-import dbClient from '../../utils/dbClient.js';
 // Response strings
 import { RESPONSE_MESSAGES } from '../../utils/responses.js';
 // Error event creation functions
-const createErrorEvent = async (errorEvent, additionalContent = '') => {
-  try {
-    const userId = errorEvent.user?.id || null;
-    const userEmail = errorEvent.user?.email || 'unknown';
-    const codeId = errorEvent.code || null;
-    const content = `${errorEvent.code} ${errorEvent.message} ${additionalContent}`;
-
-    await dbClient.event.create({
-      data: {
-        type: 'ERROR',
-        topic: errorEvent.topic,
-        content,
-        receivedById: userId,
-        code: codeId,
-      },
-    });
-  } catch (err) {
-    const error = new CreateEventError(userId, errorEvent.topic);
-    myEmitterErrors.emit('error', error);
-    throw err;
-  }
-};
+import { createErrorEvent } from './event.js';
 
 // Exported error event creation functions
 export const createGenericErrorEvent = async (errorEvent) => {
