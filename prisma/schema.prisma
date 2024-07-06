@@ -15,18 +15,19 @@ enum Role {
 }
 
 model User {
-  id             String            @id @default(uuid())
-  email          String            @unique
-  password       String
-  role           Role              @default(USER)
-  verifications  UserVerification?
-  agreedToTerms  Boolean           @default(false)
-  profile        Profile?
-  createdEvents  Event[]           @relation("createdEvents")
-  receivedEvents Event[]           @relation("receivedEvents")
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime?         @updatedAt
-  profileId      String?
+  id              String            @id @default(uuid())
+  email           String            @unique
+  password        String
+  role            Role              @default(USER)
+  verifications   UserVerification?
+  verified        Boolean           @default(false)
+  agreedToTerms   Boolean           @default(false)
+  agreedToPrivacy Boolean           @default(false)
+  profile         Profile?
+  createdEvents   Event[]           @relation("createdEvents")
+  receivedEvents  Event[]           @relation("receivedEvents")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?         @updatedAt
 }
 
 model Profile {

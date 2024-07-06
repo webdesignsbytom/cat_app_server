@@ -24,10 +24,10 @@ const resetTransporter = createTransporter(process.env.RESET_EMAIL, process.env.
 // Set up handlebars for HTML email templates
 const handlebarOptions = {
   viewEngine: {
-    partialsDir: path.resolve('./emailTemplates/'),
+    partialsDir: path.resolve('./src/utils/emailTemplates/'),
     defaultLayout: false,
   },
-  viewPath: path.resolve('./emailTemplates/'),
+  viewPath: path.resolve('./src/utils/emailTemplates/'),
 };
 
 transporter.use('compile', hbs(handlebarOptions));

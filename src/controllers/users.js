@@ -2,10 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dbClient from '../utils/dbClient.js';
 // Components
-import {
-  createVerificationInDB,
-  createPasswordResetInDB,
-} from './utils.js';
+import { createVerificationInDB, createPasswordResetInDB } from './utils.js';
 // Emitters
 import { myEmitterUsers } from '../event/userEvents.js';
 import { myEmitterErrors } from '../event/errorEvents.js';
@@ -37,7 +34,10 @@ import {
 } from '../event/utils/errorUtils.js';
 // Time
 import { v4 as uuid } from 'uuid';
-import { sendResetPasswordEmail, sendVerificationEmail } from '../utils/sendEmail.js';
+import {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+} from '../utils/sendEmail.js';
 
 // Password hash
 const hashRate = 8;
@@ -96,9 +96,26 @@ export const getUserById = async (req, res) => {
 
 export const registerNewUser = async (req, res) => {
   console.log('create new user');
-  const { email, password, firstName, lastName, country } = req.body;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    country,
+    agreedToTerms,
+    agreedToPrivacy,
+  } = req.body;
+  console.log('email');
 
-  if (!email || !password || !firstName || !lastName || !country) {
+  if (
+    !email ||
+    !password ||
+    !firstName ||
+    !lastName ||
+    !country ||
+    !agreedToTerms ||
+    !agreedToPrivacy
+  ) {
     const missingFields = new MissingFieldEvent(
       req.user,
       EVENT_MESSAGES.missingFields
@@ -107,25 +124,46 @@ export const registerNewUser = async (req, res) => {
     return sendMessageResponse(res, missingFields.code, missingFields.message);
   }
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, hashRate);
-    const newUser = await createUser({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      country,
-    });
+  // Lowercase for search integrity
+  const lowerCaseEmail = email.toLowerCase();
+  const lowerCaseFirstName = firstName.toLowerCase();
+  const lowerCaseLastName = lastName.toLowerCase();
+  const lowerCaseCountry = country.toLowerCase();
 
+  try {
+    const foundUser = await findUserByEmail(lowerCaseEmail);
+    if (foundUser) {
+      return sendDataResponse(res, 400, { email: EVENT_MESSAGES.emailInUse });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, hashRate);
+
+    // Create new user
+    const newUser = await createUser(
+      lowerCaseEmail,
+      hashedPassword,
+      lowerCaseFirstName,
+      lowerCaseLastName,
+      lowerCaseCountry,
+      agreedToTerms,
+      agreedToPrivacy
+    );
+
+    // Create unique verification string
     const uniqueString = uuid() + newUser.id;
     const hashedString = await bcrypt.hash(uniqueString, hashRate);
+
+    // Create verification model
     await createVerificationInDB(newUser.id, hashedString);
 
-    await sendVerificationEmail(newUser.id, newUser.email, uniqueString);
+    // Send verification email
+    // await sendVerificationEmail(newUser.id, newUser.email, uniqueString);
 
     myEmitterUsers.emit('register', newUser);
     return sendDataResponse(res, 201, { user: newUser });
   } catch (err) {
+    //
     const serverError = new RegistrationServerErrorEvent(
       `Register New User Server error`
     );

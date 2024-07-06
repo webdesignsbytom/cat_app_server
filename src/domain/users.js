@@ -11,7 +11,7 @@ export const findUserByEmail = (email) =>
   dbClient.user.findUnique({
     where: { email: email },
     include: {
-      profile: true
+      profile: true,
     },
   });
 
@@ -23,23 +23,27 @@ export const findUsersByRole = (role) =>
   });
 
 export const createUser = (
-  email,
-  password,
-  role,
-  firstName,
-  lastName,
-  country,
-  agreedToTerms
+  lowerCaseEmail,
+  hashedPassword,
+  lowerCaseFirstName,
+  lowerCaseLastName,
+  lowerCaseCountry,
+  agreedToTerms,
+  agreedToPrivacy
 ) =>
   dbClient.user.create({
     data: {
-      email: email,
-      password: password,
-      role: role,
-      firstName: firstName,
-      lastName: lastName,
-      country: country,
+      email: lowerCaseEmail,
+      password: hashedPassword,
+      profile: {
+        create: {
+          firstName: lowerCaseFirstName,
+          lastName: lowerCaseLastName,
+          country: lowerCaseCountry,
+        },
+      },
       agreedToTerms: agreedToTerms,
+      agreedToPrivacy: agreedToPrivacy,
     },
   });
 
@@ -63,7 +67,7 @@ export const findUserById = (userId) =>
       id: userId,
     },
     include: {
-      profile: true
+      profile: true,
     },
   });
 
