@@ -2,6 +2,9 @@
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'DEVELOPER');
 
 -- CreateEnum
+CREATE TYPE "VideoType" AS ENUM ('COTD', 'GENERAL', 'THERAPY', 'PENDING', 'APPROVED');
+
+-- CreateEnum
 CREATE TYPE "EventType" AS ENUM ('ERROR', 'USER', 'ADMIN', 'VISITOR', 'DEVELOPER', 'PURCHASE', 'MINING', 'TEST');
 
 -- CreateTable
@@ -14,6 +17,23 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Video" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "videoType" "VideoType" NOT NULL DEFAULT 'PENDING',
+    "path" TEXT NOT NULL,
+    "size" INTEGER NOT NULL,
+    "duration" DOUBLE PRECISION NOT NULL,
+    "codec" TEXT NOT NULL,
+    "width" INTEGER NOT NULL,
+    "height" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Video_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
