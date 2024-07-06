@@ -14,6 +14,7 @@ const uploadDirectory = path.join(__dirname, '..', 'media', 'uploads');
 const compressedDirectory = path.join(__dirname, '..', 'media', 'compressed');
 
 export const getTestData = async (req, res) => {
+  console.log('xxxx');
   try {
     return sendDataResponse(res, 200, {
       message: 'The Tulips bloom in Paris on Thursdays',

@@ -9,9 +9,11 @@ import { LoginServerErrorEvent } from '../event/utils/errorUtils.js';
 // Token
 import { createAccessToken } from '../utils/tokens.js';
 
-
 export const login = async (req, res) => {
+  console.log('LOGIN');
   const { email, password } = req.body;
+  console.log('email', email);
+  console.log('password', password);
   const lowerCaseEmail = email.toLowerCase();
 
   if (!lowerCaseEmail || !password) {
@@ -23,25 +25,24 @@ export const login = async (req, res) => {
   try {
     const existingUser = await findUserByEmail(lowerCaseEmail);
 
-    const areCredentialsValid = await validateCredentials(password, existingUser)
+    const areCredentialsValid = await validateCredentials(
+      password,
+      existingUser
+    );
 
     if (!areCredentialsValid) {
       return sendDataResponse(res, 400, {
-        email: 'Invalid email and/or password provided'
-      })
+        email: 'Invalid email and/or password provided',
+      });
     }
 
-    delete existingUser.password
+    delete existingUser.password;
 
-    const token = createAccessToken(existingUser.id, existingUser.email)
-    return sendDataResponse(res, 200, { token, existingUser })
-
+    const token = createAccessToken(existingUser.id);
+    return sendDataResponse(res, 200, { token, existingUser });
   } catch (err) {
     //
-    const serverError = new LoginServerErrorEvent(
-      email,
-      `Login Server error`
-    );
+    const serverError = new LoginServerErrorEvent(email, `Login Server error`);
     myEmitterErrors.emit('error-login', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;
@@ -49,18 +50,18 @@ export const login = async (req, res) => {
 };
 
 export async function validateCredentials(password, user) {
-    if (!user) {
-      return false
-    }
-  
-    if (!password) {
-      return false
-    }
-  
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      return false
-    }
-  
-    return true
+  if (!user) {
+    return false;
   }
+
+  if (!password) {
+    return false;
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return false;
+  }
+
+  return true;
+}

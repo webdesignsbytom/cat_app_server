@@ -6,6 +6,7 @@ import * as url from 'url';
 import { join } from 'path';
 
 // Routes
+import authRouter from './routes/auth.js';
 import videoRouter from './routes/videos.js';
 import adminRouter from './routes/admin.js';
 import eventRouter from './routes/events.js';
@@ -25,6 +26,7 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Routes
+app.use('/', authRouter);
 app.use('/videos', videoRouter);
 app.use('/admin', adminRouter);
 app.use('/event', eventRouter);
