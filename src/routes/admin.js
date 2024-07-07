@@ -14,19 +14,31 @@ const router = Router();
 
 router.get('/admin-test', getTestData);
 router.get(
-  '/video-uploads/video-review/next-new-video',
+  '/video-uploads/video-review/new-video',
+  validateAuthentication,
+  validateAdminRole,
+  getNextVideoToReview
+);
+router.get(
+  'video-uploads/video-review/new-video/next-video',
+  validateAuthentication,
+  validateAdminRole,
+  getNextVideoToReview
+);
+router.get(
+  'video-uploads/video-review/new-video/previous-video',
   validateAuthentication,
   validateAdminRole,
   getNextVideoToReview
 );
 router.post(
-  '/video-uploads/video-review/approve-new-video/:videoName',
+  '/video-uploads/video-review/new-video/approve-new-video/:videoName',
   validateAuthentication,
   validateAdminRole,
   approveVideoToReview
 );
 router.delete(
-  '/video-uploads/video-review/delete-new-video/:videoName',
+  '/video-uploads/video-review/new-video/delete-new-video/:videoName',
   validateAuthentication,
   validateAdminRole,
   deleteVideoToReview
