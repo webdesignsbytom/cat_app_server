@@ -20,7 +20,7 @@ import {
 
 const router = Router();
 
-router.get('/', validateAuthentication, validateAdminRole, getAllUsers);
+router.get('/get-all-users', validateAuthentication, validateAdminRole, getAllUsers);
 router.get('/:userId', getUserById);
 router.post('/register', registerNewUser);
 router.put('/verify-user-email/:userId/:uniqueString', verifyUserEmail);
