@@ -2,22 +2,25 @@
 import { myEmitterErrors } from '../event/errorEvents.js';
 import { myEmitterEvents } from '../event/eventEvents.js';
 // Domain
-import { deleteAllEventsFromDB, deleteEventId, findAllEvents } from '../domain/events.js';
+import {
+  deleteAllEventsFromDB,
+  deleteEventId,
+  findAllEvents,
+} from '../domain/events.js';
 // Response messages
-import { EVENT_MESSAGES, sendDataResponse, sendMessageResponse } from '../utils/responses.js';
+import {
+  EVENT_MESSAGES,
+  sendDataResponse,
+  sendMessageResponse,
+} from '../utils/responses.js';
 import {
   NotFoundEvent,
   ServerErrorEvent,
-  MissingFieldEvent,
-  RegistrationServerErrorEvent,
 } from '../event/utils/errorUtils.js';
 
 export const getAllEvents = async (req, res) => {
-  console.log('get all events');
-
   try {
     const foundEvents = await findAllEvents();
-    console.log('found events:', foundEvents);
 
     if (!foundEvents) {
       const notFound = new NotFoundEvent(
@@ -48,7 +51,7 @@ export const getAllEvents = async (req, res) => {
 };
 
 export const deleteEventById = async (req, res) => {
-  const { eventId } = req.params
+  const { eventId } = req.params;
 
   try {
     const deletedEvent = await deleteEventId(eventId);
@@ -63,17 +66,19 @@ export const deleteEventById = async (req, res) => {
     throw err;
   }
 };
+
 export const deleteAllEvents = async (req, res) => {
-  console.log('get all events');
 
   try {
     await deleteAllEventsFromDB();
 
     myEmitterEvents.emit('delete-all-events', req.user);
-    return sendDataResponse(res, 200, { events: "Deleted" });
+    return sendDataResponse(res, 200, {
+      events: 'Success: All events Deleted',
+    });
   } catch (err) {
     //
-    const serverError = new ServerErrorEvent(req.user, `Delete all events`);
+    const serverError = new ServerErrorEvent(req.user, `Delete all events failed`);
     myEmitterErrors.emit('error', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;

@@ -29,7 +29,7 @@ const __dirname = path.dirname(__filename);
 app.use('/', authRouter);
 app.use('/videos', videoRouter);
 app.use('/admin', adminRouter);
-app.use('/event', eventRouter);
+app.use('/events', eventRouter);
 app.use('/user', userRouter);
 
 // Server interface page

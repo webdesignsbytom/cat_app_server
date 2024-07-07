@@ -23,6 +23,7 @@ model User {
   verified        Boolean           @default(false)
   agreedToTerms   Boolean           @default(false)
   agreedToPrivacy Boolean           @default(false)
+  active          Boolean           @default(true)
   profile         Profile?
   createdEvents   Event[]           @relation("createdEvents")
   receivedEvents  Event[]           @relation("receivedEvents")

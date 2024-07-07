@@ -3,13 +3,16 @@ import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 import multer from 'multer';
 import * as url from 'url';
-import winston from 'winston';
+// Constants 
 import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
+// Logging
+import { logger } from '../log/utils/loggerUtil.js';
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Video paths
 const compressedDirectory = path.join(__dirname, '..', 'media', approvedVideoUrl);
 const uploadDirectory = path.join(__dirname, '..', 'media', uploadVideoUrl);
 
@@ -35,24 +38,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('video');
 
-// Set up winston logger
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message }) => `${timestamp} [${level}]: ${message}`)
-  ),
-  transports: [
-    new winston.transports.File({ filename: path.join(__dirname, '..', 'log', 'upload.log') }),
-  ],
-});
-
 export const getMainVideo = async (req, res) => {
   logger.info('getMainVideo called');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const videoPath = getVideoPath(currentVideoIndex);
   logger.info(`video path: ${videoPath}`);
+  
   if (!fs.existsSync(videoPath)) {
     logger.error('Video not found');
     return res.status(404).send('Video not found');

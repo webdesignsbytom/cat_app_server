@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 
-router.get('/', validateAuthentication, validateDeveloperRole, getAllEvents);
+router.get('/get-all-events', validateAuthentication, validateDeveloperRole, getAllEvents);
 router.delete(
   '/delete-event/:eventId',
   validateAuthentication,

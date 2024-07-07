@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dbClient from '../utils/dbClient.js';
 // Components
@@ -34,10 +33,13 @@ import {
 } from '../event/utils/errorUtils.js';
 // Time
 import { v4 as uuid } from 'uuid';
+// Email
 import {
   sendResetPasswordEmail,
   sendVerificationEmail,
 } from '../utils/sendEmail.js';
+// Logging
+import { logger } from '../log/utils/loggerUtil.js';
 
 // Password hash
 const hashRate = 8;
@@ -70,6 +72,8 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
   console.log('getUserById');
   const { userId } = req.params;
+  logger.info(`\nGet user by id called by ${userId}`);
+
   try {
     const foundUser = await findUserById(userId);
     if (!foundUser) {

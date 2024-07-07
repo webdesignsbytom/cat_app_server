@@ -1,6 +1,7 @@
 // Error events
 import { myEmitterErrors } from '../errorEvents.js';
 import { NoPermissionEvent } from './errorUtils.js';
+import { createEvent } from './events.js';
 
 const checkDeveloperRole = (user) => {
   if (user.role !== 'DEVELOPER') {

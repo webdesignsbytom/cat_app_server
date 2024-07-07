@@ -22,23 +22,26 @@ export const createEvent = async (user, type, topic, content, code) => {
 };
 
 export const createErrorEvent = async (errorEvent, additionalContent = '') => {
-    try {
-      const userId = errorEvent.user?.id || 'Visitor';
-      const codeId = errorEvent.code || 'Unknown';
-      const content = `${errorEvent.code} ${errorEvent.message} ${additionalContent}`;
-  
-      await dbClient.event.create({
-        data: {
-          type: 'ERROR',
-          topic: errorEvent.topic,
-          content: content,
-          receivedById: userId,
-          code: codeId,
-        },
-      });
-    } catch (err) {
-      const error = new CreateEventError(userId, errorEvent.topic);
-      myEmitterErrors.emit('error', error);
-      throw err;
-    }
-  };
+  let userId = null; // Default value for userId
+  let codeId = 'Unknown';
+
+  try {
+    userId = errorEvent.user?.id || null;
+    codeId = errorEvent.code || 'Unknown';
+    const content = `${errorEvent.code} ${errorEvent.message} ${additionalContent}`;
+
+    await dbClient.event.create({
+      data: {
+        type: 'ERROR',
+        topic: errorEvent.topic,
+        content: content,
+        receivedById: userId,
+        code: codeId,
+      },
+    });
+  } catch (err) {
+    const error = new CreateEventError(userId, errorEvent.topic);
+    myEmitterErrors.emit('error', error);
+    throw err;
+  }
+};

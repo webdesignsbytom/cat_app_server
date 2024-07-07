@@ -4,14 +4,16 @@ import * as url from 'url';
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js';
 // Errors
 import { ServerErrorEvent } from '../event/utils/errorUtils.js';
+// Constants
+import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Video paths
-const uploadDirectory = path.join(__dirname, '..', 'media', 'uploads');
-const compressedDirectory = path.join(__dirname, '..', 'media', 'compressed');
+const compressedDirectory = path.join(__dirname, '..', 'media', approvedVideoUrl);
+const uploadDirectory = path.join(__dirname, '..', 'media', uploadVideoUrl);
 
 export const getTestData = async (req, res) => {
   console.log('xxxx');
