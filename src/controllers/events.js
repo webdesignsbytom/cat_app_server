@@ -19,6 +19,7 @@ import {
 } from '../event/utils/errorUtils.js';
 
 export const getAllEvents = async (req, res) => {
+
   try {
     const foundEvents = await findAllEvents();
 
@@ -43,7 +44,7 @@ export const getAllEvents = async (req, res) => {
     return sendDataResponse(res, 200, { events: foundEvents });
   } catch (err) {
     //
-    const serverError = new ServerErrorEvent(req.user, `Get all events`);
+    const serverError = new ServerErrorEvent(req.user, `Get all events failed`);
     myEmitterErrors.emit('error', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;

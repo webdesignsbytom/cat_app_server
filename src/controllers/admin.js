@@ -1,19 +1,32 @@
 import path from 'path';
 import * as url from 'url';
+import fs from 'fs';
+import ffmpeg from 'fluent-ffmpeg';
 // Responses
 import { sendDataResponse, sendMessageResponse } from '../utils/responses.js';
 // Errors
 import { ServerErrorEvent } from '../event/utils/errorUtils.js';
 // Constants
 import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
+import { myEmitterErrors } from '../event/errorEvents.js';
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Video paths
-const compressedDirectory = path.join(__dirname, '..', 'media', approvedVideoUrl);
-const uploadDirectory = path.join(__dirname, '..', 'media', uploadVideoUrl);
+const compressedVideoDirectory = path.join(
+  __dirname,
+  '..',
+  'media',
+  approvedVideoUrl
+);
+const uploadVideoDirectory = path.join(
+  __dirname,
+  '..',
+  'media',
+  uploadVideoUrl
+);
 
 export const getTestData = async (req, res) => {
   console.log('xxxx');
@@ -32,13 +45,13 @@ export const getTestData = async (req, res) => {
 
 export const getNextVideoToReview = async (req, res) => {
   console.log('getNextVideoToReview');
+
   try {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     // Read the uploads directory
-    const uploadDirectory = path.join(__dirname, '..', 'media', 'uploads');
     let uploadVideos = fs
-      .readdirSync(uploadDirectory)
+      .readdirSync(uploadVideoDirectory)
       .filter((file) => file.endsWith('.mp4'));
 
     if (uploadVideos.length === 0) {
@@ -46,7 +59,7 @@ export const getNextVideoToReview = async (req, res) => {
     }
 
     // Get the first video from the uploads directory
-    const uploadVideoPath = path.join(uploadDirectory, uploadVideos[0]);
+    const uploadVideoPath = path.join(uploadVideoDirectory, uploadVideos[0]);
     console.log('upload video path: ', uploadVideoPath);
 
     if (!fs.existsSync(uploadVideoPath)) {
@@ -72,10 +85,11 @@ export const getNextVideoToReview = async (req, res) => {
         'Content-Length': chunksize,
         'Content-Type': 'video/mp4',
       };
-
+      console.log('11111111');
       res.writeHead(206, head);
       file.pipe(res);
     } else {
+      console.log('222222222');
       const head = {
         'Content-Length': fileSize,
         'Content-Type': 'video/mp4',
@@ -106,7 +120,9 @@ export const deleteVideoToReview = async (req, res) => {
     }
 
     fs.unlinkSync(videoPath);
-    return sendDataResponse(res, 200, { message: 'Video deleted successfully' });
+    return sendDataResponse(res, 200, {
+      message: 'Video deleted successfully',
+    });
   } catch (err) {
     const serverError = new ServerErrorEvent('Error deleting video');
     myEmitterErrors.emit('error', serverError);
@@ -119,8 +135,8 @@ export const approveVideoToReview = async (req, res) => {
   console.log('approveVideoToReview');
   try {
     const { videoName } = req.params;
-    const uploadVideoPath = path.join(uploadDirectory, videoName);
-    const compressedVideoPath = path.join(compressedDirectory, videoName);
+    const uploadVideoPath = path.join(uploadVideoDirectory, videoName);
+    const compressedVideoPath = path.join(compressedVideoDirectory, videoName);
 
     if (!fs.existsSync(uploadVideoPath)) {
       return res.status(404).send('Video not found');
@@ -132,15 +148,19 @@ export const approveVideoToReview = async (req, res) => {
     // Get video metadata using ffmpeg
     ffmpeg.ffprobe(compressedVideoPath, async (err, metadata) => {
       if (err) {
-        const serverError = new ServerErrorEvent('Error getting video metadata');
+        const serverError = new ServerErrorEvent(
+          'Error getting video metadata'
+        );
         myEmitterErrors.emit('error', serverError);
         return sendMessageResponse(res, serverError.code, serverError.message);
       }
 
       // Save metadata to the database
       const { format, streams } = metadata;
-      const videoStream = streams.find(stream => stream.codec_type === 'video');
-      
+      const videoStream = streams.find(
+        (stream) => stream.codec_type === 'video'
+      );
+
       await dbClient.video.create({
         data: {
           name: videoName,
@@ -153,7 +173,9 @@ export const approveVideoToReview = async (req, res) => {
         },
       });
 
-      return sendDataResponse(res, 200, { message: 'Video approved and moved successfully' });
+      return sendDataResponse(res, 200, {
+        message: 'Video approved and moved successfully',
+      });
     });
   } catch (err) {
     const serverError = new ServerErrorEvent('Error approving video');
