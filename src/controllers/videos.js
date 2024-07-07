@@ -3,7 +3,7 @@ import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 import multer from 'multer';
 import * as url from 'url';
-// Constants
+import winston from 'winston';
 import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
 
 // Get the directory name
@@ -35,16 +35,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('video');
 
-// Set the path to the ffmpeg binary
-// ffmpeg.setFfmpegPath(path.join('C:', 'ffmpeg', 'bin', 'ffmpeg.exe')); // Adjust the path as necessary
+// Set up winston logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => `${timestamp} [${level}]: ${message}`)
+  ),
+  transports: [
+    new winston.transports.File({ filename: path.join(__dirname, '..', 'log', 'upload.log') }),
+  ],
+});
 
 export const getMainVideo = async (req, res) => {
-  console.log('getMainVideo');
+  logger.info('getMainVideo called');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const videoPath = getVideoPath(currentVideoIndex);
-  console.log('video path: ', videoPath);
+  logger.info(`video path: ${videoPath}`);
   if (!fs.existsSync(videoPath)) {
+    logger.error('Video not found');
     return res.status(404).send('Video not found');
   }
 
@@ -52,8 +62,8 @@ export const getMainVideo = async (req, res) => {
   const fileSize = stat.size;
   const range = req.headers.range;
 
-  console.log('fileSize: ', fileSize);
-  console.log('range', range);
+  logger.info(`fileSize: ${fileSize}`);
+  logger.info(`range: ${range}`);
 
   if (range) {
     const parts = range.replace(/bytes=/, '').split('-');
@@ -89,6 +99,7 @@ export const getNextMainVideo = async (req, res) => {
   } else {
     currentVideoIndex = 0; // Loop back to the first video
   }
+  logger.info(`getNextMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
   res.redirect('/videos/video');
 };
 
@@ -100,21 +111,23 @@ export const getPreviousMainVideo = async (req, res) => {
   } else {
     currentVideoIndex = videos.length - 1; // Loop back to the last video
   }
+  logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
   res.redirect('/videos/video');
 };
 
 export const uploadMainVideo = async (req, res) => {
-  console.log('uploadMainVideo');
+  logger.info('uploadMainVideo called');
 
   upload(req, res, (err) => {
     if (err) {
+      logger.error(`Error uploading video: ${err.message}`);
       return res.status(500).json({ message: 'Error uploading video' });
     }
 
-    console.log('req.file', req.file);
+    logger.info(`req.file: ${JSON.stringify(req.file)}`);
 
     const filePath = req.file.path;
-    console.log('filePath', filePath);
+    logger.info(`filePath: ${filePath}`);
 
     let random = Math.floor(Math.random() * 100000);
 
@@ -123,7 +136,7 @@ export const uploadMainVideo = async (req, res) => {
       `${Date.now()}-${random}-compressed.mp4`
     );
 
-    console.log('outputPath', outputPath);
+    logger.info(`outputPath: ${outputPath}`);
 
     // Use ffmpeg to compress the video
     ffmpeg(filePath)
@@ -139,13 +152,14 @@ export const uploadMainVideo = async (req, res) => {
         videos = fs
           .readdirSync(uploadDirectory)
           .filter((file) => file.endsWith('.mp4'));
+        logger.info('Video uploaded and compressed successfully');
         res.json({
           message: 'Video uploaded and compressed successfully',
           url: outputPath,
         });
       })
       .on('error', (err) => {
-        console.error(err);
+        logger.error(`Error compressing video: ${err.message}`);
         res.status(500).json({ message: 'Error compressing video' });
       })
       .run();
