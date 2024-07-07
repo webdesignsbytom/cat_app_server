@@ -21,14 +21,14 @@ import {
 const router = Router();
 
 router.get('/get-all-users', validateAuthentication, validateAdminRole, getAllUsers);
-router.get('/get-user-by-id/:userId', getUserById);
+router.get('/get-user-by-id/:userId', validateAuthentication, getUserById);
 router.post('/register', registerNewUser);
 router.put('/verify-user-email/:userId/:uniqueString', verifyUserEmail);
-router.put('/account/update/:userId', updateUser);
+router.put('/account/update/:userId', validateAuthentication, updateUser);
 router.post('/verify/resend-email/:email', resendVerificationEmail);
 router.post('/send-password-reset', sendPasswordReset);
 router.post('/reset-password/:userId/:uniqueString', resetPassword);
-router.put('/account/update/:userId', updateUser);
+router.put('/account/update/:userId', validateAuthentication, updateUser);
 router.put(
   '/account/change-role/:userId',
   validateAuthentication,
