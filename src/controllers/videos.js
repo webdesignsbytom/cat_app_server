@@ -3,13 +3,15 @@ import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 import multer from 'multer';
 import * as url from 'url';
+// Constants
+import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uploadDirectory = path.join(__dirname, '..', 'media', 'uploads');
-const compressedDirectory = path.join(__dirname, '..', 'media', 'compressed');
+const compressedDirectory = path.join(__dirname, '..', 'media', approvedVideoUrl);
+const uploadDirectory = path.join(__dirname, '..', 'media', uploadVideoUrl);
 
 const selectedDirectory = compressedDirectory;
 
@@ -117,7 +119,7 @@ export const uploadMainVideo = async (req, res) => {
     let random = Math.floor(Math.random() * 100000);
 
     const outputPath = path.join(
-      compressedDirectory,
+      uploadDirectory,
       `${Date.now()}-${random}-compressed.mp4`
     );
 
@@ -135,7 +137,7 @@ export const uploadMainVideo = async (req, res) => {
         fs.unlinkSync(filePath);
         // Refresh the video list
         videos = fs
-          .readdirSync(videoDirectory)
+          .readdirSync(uploadDirectory)
           .filter((file) => file.endsWith('.mp4'));
         res.json({
           message: 'Video uploaded and compressed successfully',
