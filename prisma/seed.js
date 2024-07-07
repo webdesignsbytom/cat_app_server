@@ -8,6 +8,15 @@ async function seed() {
     data: {
       email: `xto@gmail.com`,
       password,
+      agreedToPrivacy: true,
+      agreedToTerms: true,
+      profile: {
+        create: {
+          firstName: 'Henny',
+          lastName: 'Jerry',
+          country: 'England',
+        },
+      },
     },
   });
 
@@ -16,6 +25,15 @@ async function seed() {
       email: 'admin@admin.com',
       password,
       role: 'ADMIN',
+      agreedToPrivacy: true,
+      agreedToTerms: true,
+      profile: {
+        create: {
+          firstName: 'Henny',
+          lastName: 'Jerry',
+          country: 'England',
+        },
+      },
     },
   });
 
@@ -24,6 +42,15 @@ async function seed() {
       email: 'dev@dev.com',
       password,
       role: 'DEVELOPER',
+      agreedToPrivacy: true,
+      agreedToTerms: true,
+      profile: {
+        create: {
+          firstName: 'Henny',
+          lastName: 'Jerry',
+          country: 'England',
+        },
+      },
     },
   });
 
