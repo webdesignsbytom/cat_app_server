@@ -10,10 +10,8 @@ import { LoginServerErrorEvent } from '../event/utils/errorUtils.js';
 import { createAccessToken } from '../utils/tokens.js';
 
 export const login = async (req, res) => {
-  console.log('LOGIN');
   const { email, password } = req.body;
-  console.log('email', email);
-  console.log('password', password);
+
   const lowerCaseEmail = email.toLowerCase();
 
   if (!lowerCaseEmail || !password) {
