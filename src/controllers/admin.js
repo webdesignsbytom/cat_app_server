@@ -9,6 +9,8 @@ import { ServerErrorEvent } from '../event/utils/errorUtils.js';
 // Constants
 import { approvedVideoUrl, uploadVideoUrl } from '../utils/constants.js';
 import { myEmitterErrors } from '../event/errorEvents.js';
+// Logging
+import { logger } from '../log/utils/loggerUtil.js';
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
@@ -44,6 +46,7 @@ export const getTestData = async (req, res) => {
 
 export const getNextVideoToReview = async (req, res) => {
   console.log('getNextVideoToReview');
+  logger.info('getNextVideoToReview called');
 
   try {
     res.setHeader('Access-Control-Allow-Origin', '*');

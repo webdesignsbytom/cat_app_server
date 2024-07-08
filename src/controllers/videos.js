@@ -18,13 +18,14 @@ const uploadDirectory = path.join(__dirname, '..', 'media', uploadVideoUrl);
 
 const selectedDirectory = compressedDirectory;
 
-let videos = fs
+let approvedVideos = fs
   .readdirSync(selectedDirectory)
   .filter((file) => file.endsWith('.mp4'));
+
 let currentVideoIndex = 0;
 
 // Helper function to get video path
-const getVideoPath = (index) => path.join(selectedDirectory, videos[index]);
+const getVideoPath = (index) => path.join(selectedDirectory, approvedVideos[index]);
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -87,7 +88,7 @@ export const getMainVideo = async (req, res) => {
 export const getNextMainVideo = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  if (currentVideoIndex < videos.length - 1) {
+  if (currentVideoIndex < approvedVideos.length - 1) {
     currentVideoIndex++;
   } else {
     currentVideoIndex = 0; // Loop back to the first video
@@ -102,14 +103,14 @@ export const getPreviousMainVideo = async (req, res) => {
   if (currentVideoIndex > 0) {
     currentVideoIndex--;
   } else {
-    currentVideoIndex = videos.length - 1; // Loop back to the last video
+    currentVideoIndex = approvedVideos.length - 1; // Loop back to the last video
   }
   logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
   res.redirect('/videos/video');
 };
 
 export const uploadMainVideo = async (req, res) => {
-  logger.info('uploadMainVideo called');
+  logger.info('\nuploadMainVideo called');
 
   upload(req, res, (err) => {
     if (err) {
