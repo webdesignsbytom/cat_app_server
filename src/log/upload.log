@@ -1,0 +1,49 @@
+2024-07-08T20:11:26.758Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:11:27.745Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:11:32.131Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:11:35.065Z [info]: getMainVideo called
+2024-07-08T20:11:35.065Z [info]: video path: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\approved\1718827609082-compressed.mp4
+2024-07-08T20:11:35.065Z [info]: fileSize: 3504756
+2024-07-08T20:11:35.066Z [info]: range: undefined
+2024-07-08T20:11:38.956Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:11:46.053Z [info]: getNextVideoToReview called
+2024-07-08T20:11:51.244Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:14:11.778Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:14:13.252Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:14:34.315Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:15:40.340Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:15:45.677Z [info]: uploadNewCatVideo called
+2024-07-08T20:15:45.862Z [info]: req.file: {"fieldname":"video","originalname":"cat_video12.mp4","encoding":"7bit","mimetype":"video/mp4","destination":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review","filename":"1720469745682-cat_video12.mp4","path":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review\\1720469745682-cat_video12.mp4","size":20066611}
+2024-07-08T20:15:45.862Z [info]: filePath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469745682-cat_video12.mp4
+2024-07-08T20:15:45.862Z [info]: outputPath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469745862-compressed.mp4
+2024-07-08T20:16:50.324Z [info]: 
+Get user by id called by 4a0c7a43-b704-4f44-bb4f-a0f97ec8e2c6
+2024-07-08T20:16:54.188Z [info]: uploadNewCatVideo called
+2024-07-08T20:16:54.330Z [info]: req.file: {"fieldname":"video","originalname":"cat_video12.mp4","encoding":"7bit","mimetype":"video/mp4","destination":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review","filename":"1720469814195-cat_video12.mp4","path":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review\\1720469814195-cat_video12.mp4","size":20066611}
+2024-07-08T20:16:54.331Z [info]: filePath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469814195-cat_video12.mp4
+2024-07-08T20:16:54.331Z [info]: outputPath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469814331-compressed.mp4
+2024-07-08T20:16:59.274Z [info]: Video uploaded and compressed successfully
+2024-07-08T20:17:22.436Z [info]: uploadNewCatVideo called
+2024-07-08T20:17:22.519Z [info]: req.file: {"fieldname":"video","originalname":"cat_video12.mp4","encoding":"7bit","mimetype":"video/mp4","destination":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review","filename":"1720469842438-cat_video12.mp4","path":"C:\\Users\\Tom\\Documents\\code\\javascript\\cat_app_server\\src\\media\\review\\1720469842438-cat_video12.mp4","size":20066611}
+2024-07-08T20:17:22.520Z [info]: filePath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469842438-cat_video12.mp4
+2024-07-08T20:17:22.520Z [info]: outputPath: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\review\1720469842520-compressed.mp4
+2024-07-08T20:17:27.141Z [info]: Video uploaded and compressed successfully
+2024-07-08T20:18:09.239Z [info]: getNextVideoToReview called
+2024-07-08T20:18:13.877Z [info]: getMainVideo called
+2024-07-08T20:18:13.877Z [info]: video path: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\approved\1718827609082-compressed.mp4
+2024-07-08T20:18:13.879Z [info]: fileSize: 3504756
+2024-07-08T20:18:13.879Z [info]: range: undefined
+2024-07-08T20:18:15.279Z [info]: getNextMainVideo: currentVideoIndex is now 1
+2024-07-08T20:18:15.284Z [info]: getMainVideo called
+2024-07-08T20:18:15.285Z [info]: video path: C:\Users\Tom\Documents\code\javascript\cat_app_server\src\media\approved\1718827753523-compressed.mp4
+2024-07-08T20:18:15.285Z [info]: fileSize: 11514472
+2024-07-08T20:18:15.285Z [info]: range: undefined

@@ -11,6 +11,7 @@ import videoRouter from './routes/videos.js';
 import adminRouter from './routes/admin.js';
 import eventRouter from './routes/events.js';
 import userRouter from './routes/users.js';
+import uploadRouter from './routes/uploads.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -33,6 +34,7 @@ app.use('/videos', videoRouter);
 app.use('/admin', adminRouter);
 app.use('/events', eventRouter);
 app.use('/user', userRouter);
+app.use('/uploads', uploadRouter);
 
 // Server interface page
 app.get('/', (req, res) => {
