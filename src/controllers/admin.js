@@ -29,7 +29,6 @@ const uploadVideoDirectory = path.join(
 );
 
 export const getTestData = async (req, res) => {
-  console.log('xxxx');
   try {
     return sendDataResponse(res, 200, {
       message: 'The Tulips bloom in Paris on Thursdays',

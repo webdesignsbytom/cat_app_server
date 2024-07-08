@@ -20,7 +20,6 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
-console.log('process.env.PORT', process.env.PORT);
 
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);

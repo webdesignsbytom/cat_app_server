@@ -62,7 +62,7 @@ export async function validateDeveloperRole(req, res, next) {
 
 export const validateAuthentication = async (req, res, next) => {
   const header = req.header('authorization');
-  console.log('header', header);
+
   if (!header) {
     const error = new NoValidationEvent('Missing Authorization header');
     myEmitterErrors.emit('error', error);
