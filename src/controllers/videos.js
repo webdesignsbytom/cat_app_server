@@ -125,7 +125,7 @@ export const uploadMainVideo = async (req, res) => {
 
     const outputPath = path.join(
       uploadDirectory,
-      `${Date.now()}-${random}-compressed.mp4`
+      `${Date.now()}-compressed.mp4`
     );
 
     logger.info(`outputPath: ${outputPath}`);
