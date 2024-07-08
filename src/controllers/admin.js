@@ -17,18 +17,25 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Video paths
-const compressedVideoDirectory = path.join(
+const approvedVideoDirectory = path.join(
   __dirname,
   '..',
   'media',
   approvedVideoUrl
 );
+
 const uploadVideoDirectory = path.join(
   __dirname,
   '..',
   'media',
   uploadVideoUrl
 );
+
+let reviewVideos = fs
+  .readdirSync(uploadVideoDirectory)
+  .filter((file) => file.endsWith('.mp4'));
+
+let currentReviewVideoIndex = 0;
 
 export const getTestData = async (req, res) => {
   try {
@@ -44,9 +51,9 @@ export const getTestData = async (req, res) => {
   }
 };
 
-export const getNextVideoToReview = async (req, res) => {
-  console.log('getNextVideoToReview');
-  logger.info('getNextVideoToReview called');
+export const getVideoToReview = async (req, res) => {
+  console.log('getVideoToReview');
+  logger.info('getVideoToReview called');
 
   try {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -57,7 +64,7 @@ export const getNextVideoToReview = async (req, res) => {
       .filter((file) => file.endsWith('.mp4'));
 
     if (uploadVideos.length === 0) {
-      return res.status(404).send('No videos found');
+      return res.status(404).send('No videos found to review');
     }
 
     // Get the first video from the uploads directory
@@ -75,6 +82,7 @@ export const getNextVideoToReview = async (req, res) => {
     console.log('fileSize: ', fileSize);
     console.log('range', range);
 
+    // TODO: set range on front end
     if (range) {
       const parts = range.replace(/bytes=/, '').split('-');
       const start = parseInt(parts[0], 10);
@@ -87,11 +95,9 @@ export const getNextVideoToReview = async (req, res) => {
         'Content-Length': chunksize,
         'Content-Type': 'video/mp4',
       };
-      console.log('11111111');
       res.writeHead(206, head);
       file.pipe(res);
     } else {
-      console.log('222222222');
       const head = {
         'Content-Length': fileSize,
         'Content-Type': 'video/mp4',
@@ -111,11 +117,41 @@ export const getNextVideoToReview = async (req, res) => {
   }
 };
 
+export const getNextReviewVideo = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (currentReviewVideoIndex < reviewVideos.length - 1) {
+    currentReviewVideoIndex++;
+  } else {
+    currentReviewVideoIndex = 0; // Loop back to the first video
+  }
+  logger.info(
+    `getNextReviewVideo: currentReviewVideoIndex is now ${currentReviewVideoIndex}`
+  );
+  res.redirect('/video-uploads/video-review/get-video');
+};
+
+export const getPreviousReviewVideo = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (currentReviewVideoIndex > 0) {
+    currentReviewVideoIndex--;
+  } else {
+    currentReviewVideoIndex = reviewVideos.length - 1; // Loop back to the last video
+  }
+  logger.info(
+    `getPreviousReviewVideo: currentReviewVideoIndex is now ${currentReviewVideoIndex}`
+  );
+  res.redirect('/video-uploads/video-review/get-video');
+};
+
 export const deleteVideoToReview = async (req, res) => {
   console.log('deleteVideoToReview');
+  logger.info('deleteVideoToReview called');
+
   try {
     const { videoName } = req.params;
-    const videoPath = path.join(uploadDirectory, videoName);
+    const videoPath = path.join(uploadVideoDirectory, videoName);
 
     if (!fs.existsSync(videoPath)) {
       return res.status(404).send('Video not found');
@@ -135,10 +171,12 @@ export const deleteVideoToReview = async (req, res) => {
 
 export const approveVideoToReview = async (req, res) => {
   console.log('approveVideoToReview');
+  logger.info('approveVideoToReview called');
+
   try {
     const { videoName } = req.params;
     const uploadVideoPath = path.join(uploadVideoDirectory, videoName);
-    const compressedVideoPath = path.join(compressedVideoDirectory, videoName);
+    const compressedVideoPath = path.join(approvedVideoDirectory, videoName);
 
     if (!fs.existsSync(uploadVideoPath)) {
       return res.status(404).send('Video not found');

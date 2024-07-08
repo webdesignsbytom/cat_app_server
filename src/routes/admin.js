@@ -2,8 +2,10 @@ import { Router } from 'express';
 import {
   approveVideoToReview,
   deleteVideoToReview,
-  getNextVideoToReview,
+  getVideoToReview,
   getTestData,
+  getNextReviewVideo,
+  getPreviousReviewVideo,
 } from '../controllers/admin.js';
 import {
   validateAdminRole,
@@ -14,22 +16,22 @@ const router = Router();
 
 router.get('/admin-test', getTestData);
 router.get(
-  '/video-uploads/video-review/new-video',
+  '/video-uploads/video-review/get-video',
   validateAuthentication,
   validateAdminRole,
-  getNextVideoToReview
+  getVideoToReview
 );
 router.get(
-  'video-uploads/video-review/new-video/next-video',
+  'video-uploads/video-review/get-video/next-video',
   validateAuthentication,
   validateAdminRole,
-  getNextVideoToReview
+  getNextReviewVideo
 );
 router.get(
-  'video-uploads/video-review/new-video/previous-video',
+  'video-uploads/video-review/get-video/previous-video',
   validateAuthentication,
   validateAdminRole,
-  getNextVideoToReview
+  getPreviousReviewVideo
 );
 router.post(
   '/video-uploads/video-review/new-video/approve-new-video/:videoName',
