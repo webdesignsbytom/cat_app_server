@@ -39,6 +39,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single('video');
 
 export const getMainVideo = async (req, res) => {
+  console.log('get main video');
   logger.info('getMainVideo called');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
