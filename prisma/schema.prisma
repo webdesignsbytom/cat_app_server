@@ -75,15 +75,20 @@ model Video {
 
 // Cat - user owned cats 
 model Cat {
-  id        String   @id @default(uuid())
-  name      String   @default("")
-  dob       DateTime @default(now())
-  species   String   @default("")
-  profileId String   @unique
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String   @default("")
+  dob           DateTime @default(now())
+  breed         String   @default("")
+  favouriteFood String   @default("")
+  image         String   @default("")
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([profileId])
 }
+
 
 // EVENTS
 enum EventType {

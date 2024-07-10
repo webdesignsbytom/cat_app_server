@@ -15,6 +15,15 @@ async function seed() {
           firstName: 'Henny',
           lastName: 'Jerry',
           country: 'England',
+          cats: {
+            create: {
+              name: 'Whiskers',
+              dob: new Date(2020, 1, 1),
+              breed: 'Siamese',
+              favouriteFood: 'Salmon',
+              image: 'https://example.com/whiskers.jpg',
+            },
+          },
         },
       },
     },
@@ -32,6 +41,15 @@ async function seed() {
           firstName: 'Henny',
           lastName: 'Jerry',
           country: 'England',
+          cats: {
+            create: {
+              name: 'Mittens',
+              dob: new Date(2019, 5, 10),
+              breed: 'Persian',
+              favouriteFood: 'Chicken',
+              image: 'https://example.com/mittens.jpg',
+            },
+          },
         },
       },
     },
@@ -49,6 +67,15 @@ async function seed() {
           firstName: 'Henny',
           lastName: 'Jerry',
           country: 'England',
+          cats: {
+            create: {
+              name: 'Shadow',
+              dob: new Date(2018, 10, 20),
+              breed: 'Maine Coon',
+              favouriteFood: 'Tuna',
+              image: 'https://example.com/shadow.jpg',
+            },
+          },
         },
       },
     },
