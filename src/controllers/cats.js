@@ -1,6 +1,12 @@
 // Database
 import { findUserByEmail, findUserById } from '../domain/users.js';
-import { createCatForUser, deleteCatById, findCatById, getAllCatsByProfileId, updateCatById } from '../domain/cats.js';
+import {
+  createCatForUser,
+  deleteCatById,
+  findCatById,
+  getAllCatsByProfileId,
+  updateCatById,
+} from '../domain/cats.js';
 // Responses
 import {
   EVENT_MESSAGES,
@@ -17,6 +23,7 @@ import {
 } from '../event/utils/errorUtils.js';
 
 export const addNewCatToUser = async (req, res) => {
+  console.log('addNewCatToUser');
   const { userEmail, name, dob, breed, favouriteFood, image } = req.body;
 
   if (!name || !dob || !breed || !favouriteFood || !image || !userEmail) {
@@ -51,6 +58,8 @@ export const addNewCatToUser = async (req, res) => {
       image
     );
 
+    console.log('newCat', newCat);
+
     return sendDataResponse(res, 200, { newCat: newCat });
   } catch (err) {
     //
@@ -79,6 +88,7 @@ export const getAllUserCatProfiles = async (req, res) => {
     }
 
     const userCats = await getAllCatsByProfileId(foundUser.profile.id);
+    console.log('successful');
 
     return sendDataResponse(res, 200, { cats: userCats });
   } catch (err) {
@@ -125,10 +135,11 @@ export const updateCatData = async (req, res) => {
       dob: dob ? new Date(dob) : foundCat.dob,
       breed: breed ?? foundCat.breed,
       favouriteFood: favouriteFood ?? foundCat.favouriteFood,
-      image: image ?? foundCat.image
+      image: image ?? foundCat.image,
     };
 
     const updatedCat = await updateCatById(catId, updatedCatData);
+    console.log('successful', updatedCat);
 
     return sendDataResponse(res, 200, { cat: updatedCat });
   } catch (err) {
@@ -178,10 +189,13 @@ export const deleteCatFromUserProfile = async (req, res) => {
       myEmitterErrors.emit('error', badRequest);
       return sendMessageResponse(res, badRequest.code, badRequest.message);
     }
-
+    console.log('success');
     return sendDataResponse(res, 200, { message: 'Cat deleted successfully' });
   } catch (err) {
-    const serverError = new ServerErrorEvent(req.user, `Delete cat from user profile`);
+    const serverError = new ServerErrorEvent(
+      req.user,
+      `Delete cat from user profile`
+    );
     myEmitterErrors.emit('error', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;

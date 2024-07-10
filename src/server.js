@@ -23,8 +23,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
-console.log('\nPORT: ', PORT);
-
 // Get the directory name
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

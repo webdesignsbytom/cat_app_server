@@ -67,7 +67,11 @@ export const findUserById = (userId) =>
       id: userId,
     },
     include: {
-      profile: true,
+      profile: {
+        include: {
+          cats: true,
+        },
+      },
     },
   });
 
