@@ -24,9 +24,10 @@ import {
 
 export const addNewCatToUser = async (req, res) => {
   console.log('addNewCatToUser');
-  const { userEmail, name, dob, breed, favouriteFood, image } = req.body;
+  const { name, dob, breed, favouriteFood, image } = req.body;
+  const { userId } = req.params;
 
-  if (!name || !dob || !breed || !favouriteFood || !image || !userEmail) {
+  if (!name || !dob || !breed || !favouriteFood || !image || !userId) {
     const missingFields = new MissingFieldEvent(
       req.user,
       EVENT_MESSAGES.missingFields
@@ -36,8 +37,8 @@ export const addNewCatToUser = async (req, res) => {
   }
 
   try {
-    const lowerCaseEmail = userEmail.toLowerCase();
-    const foundUser = await findUserByEmail(lowerCaseEmail);
+    const foundUser = await findUserById(userId);
+    console.log('foundUser', foundUser);
 
     if (!foundUser) {
       const notFound = new NotFoundEvent(

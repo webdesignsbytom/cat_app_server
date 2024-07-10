@@ -11,7 +11,11 @@ export const findUserByEmail = (email) =>
   dbClient.user.findUnique({
     where: { email: email },
     include: {
-      profile: true,
+      profile: {
+        include: {
+          cats: true,
+        },
+      },
     },
   });
 

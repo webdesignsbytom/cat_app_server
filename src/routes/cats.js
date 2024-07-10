@@ -3,7 +3,7 @@ import { addNewCatToUser, deleteCatFromUserProfile, getAllUserCatProfiles, updat
 
 const router = Router()
 
-router.post('/add-new-user-cat', addNewCatToUser)
+router.post('/add-new-user-cat/:userId', addNewCatToUser)
 router.get('/get-all-users-cat-profiles/:userId', getAllUserCatProfiles)
 router.patch('/update-user-cat-profile/:userId/:catId', updateCatData)
 router.delete('/delete-user-cat-profile/:userId/:catId', deleteCatFromUserProfile)
