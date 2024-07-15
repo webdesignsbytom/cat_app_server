@@ -20,7 +20,7 @@ import {
 
 const router = Router();
 
-router.get('/get-all-users', validateAuthentication, validateAdminRole, getAllUsers); // TODO: update to blocks of users 
+router.get('/get-all-users', validateAuthentication, validateAdminRole, getAllUsers); // TODO: update to blocks of 100 users 
 router.get('/get-user-by-id/:userId', validateAuthentication, getUserById);
 router.post('/register', registerNewUser);
 router.put('/verify-user-email/:userId/:uniqueString', verifyUserEmail);

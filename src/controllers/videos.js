@@ -94,3 +94,38 @@ export const getPreviousMainVideo = async (req, res) => {
   logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
   res.redirect('/videos/video');
 };
+
+
+export const getVideoPreview = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  const index = parseInt(req.params.index, 10);
+  if (index >= approvedVideos.length || index < 0) {
+    return res.status(404).send('Video not found');
+  }
+
+  const videoPath = getVideoPath(index);
+  if (!fs.existsSync(videoPath)) {
+    return res.status(404).send('Video not found');
+  }
+
+  const stat = fs.statSync(videoPath);
+  const fileSize = stat.size;
+
+  // Assuming the video has a bitrate of 1MBps, 5 seconds would be roughly 5MB
+  const previewSize = 5 * 1024 * 1024; // 5MB
+  const start = 0;
+  const end = Math.min(previewSize, fileSize - 1);
+  const chunksize = end - start + 1;
+
+  const file = fs.createReadStream(videoPath, { start, end });
+  const head = {
+    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+    'Accept-Ranges': 'bytes',
+    'Content-Length': chunksize,
+    'Content-Type': 'video/mp4',
+  };
+
+  res.writeHead(206, head);
+  file.pipe(res);
+};
