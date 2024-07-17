@@ -19,8 +19,7 @@ let approvedVideos = fs
   .readdirSync(selectedDirectory)
   .filter((file) => file.endsWith('.mp4'));
 
-let currentVideoIndex = 0;
-
+  
 // Helper function to get video path
 const getVideoPath = (index) => path.join(selectedDirectory, approvedVideos[index]);
 
@@ -28,9 +27,12 @@ export const getMainVideo = async (req, res) => {
   console.log('get main video');
   logger.info('getMainVideo called');
 
+  const { videoId } = req.params
+  console.log('videoId', videoId); 
+
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const videoPath = getVideoPath(currentVideoIndex);
+  const videoPath = getVideoPath(videoId);
   logger.info(`video path: ${videoPath}`);
   
   if (!fs.existsSync(videoPath)) {
@@ -71,29 +73,25 @@ export const getMainVideo = async (req, res) => {
   }
 };
 
-export const getNextMainVideo = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+// export const getNextMainVideo = async (req, res) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  if (currentVideoIndex < approvedVideos.length - 1) {
-    currentVideoIndex++;
-  } else {
-    currentVideoIndex = 0; // Loop back to the first video
-  }
-  logger.info(`getNextMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
-  res.redirect('/videos/video');
-};
+//   const { videoId } = req.params
+//   console.log('videoId', videoId); 
 
-export const getPreviousMainVideo = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+//   logger.info(`getNextMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
+//   res.redirect(`/videos/video/${videoId}`);
+// };
 
-  if (currentVideoIndex > 0) {
-    currentVideoIndex--;
-  } else {
-    currentVideoIndex = approvedVideos.length - 1; // Loop back to the last video
-  }
-  logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
-  res.redirect('/videos/video');
-};
+// export const getPreviousMainVideo = async (req, res) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+
+//   const { videoId } = req.params
+//   console.log('videoId', videoId); 
+
+//   logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
+//   res.redirect(`/videos/video/${videoId}`);
+// };
 
 
 export const getVideoPreview = async (req, res) => {
