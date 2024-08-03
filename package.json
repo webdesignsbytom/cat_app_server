@@ -5,7 +5,6 @@
   "description": "Cat app server",
   "main": "src/server.js",
   "scripts": {
-    "postinstall": "prisma generate",
     "start": "nodemon src/server.js"
   },
   "prisma": {

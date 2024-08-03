@@ -43,6 +43,10 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/test', (req, res) => {
+  res.status(200).send('Congratulations Mr Bond you found my server lair.')
+});
+
 // For all unknown requests 404 page returns
 app.all('*', (req, res) => {
   res.status(404);
