@@ -1,27 +1,29 @@
-# version of ubuntu set up with node
-# FROM ubuntu
+# Use the official Node.js image as the base image
 FROM node:21
 
-## Like cd to a main directory
-## All instrctions will come from this directory
+# Set the working directory inside the container
 WORKDIR /app
 
-## Cashe and store the build info
+# Copy package.json and package-lock.json files to the working directory
 COPY package*.json ./
 
-## Install info
+# Install dependencies
 RUN npm install
 
-## COPY source code
+# Install FFmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
+# Copy the rest of the application code to the working directory
 COPY . .
 
 # Generate Prisma client
 RUN npx prisma generate --schema=prisma/schema.prisma
 
-## Environment variables
+# Set environment variables
 ENV PORT=4000
 
+# Expose the application port
 EXPOSE 4000
 
-## Start commands in 'exec form' 
-CMD [ "npm", "start" ]
+# Start the application
+CMD ["npm", "start"]
