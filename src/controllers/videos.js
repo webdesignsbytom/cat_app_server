@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import * as url from 'url';
-// Constants 
+// Constants
 import { approvedVideoUrl } from '../utils/constants.js';
 // Logging
 import { logger } from '../log/utils/loggerUtil.js';
@@ -11,7 +11,12 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Video paths
-const compressedDirectory = path.join(__dirname, '..', 'media', approvedVideoUrl);
+const compressedDirectory = path.join(
+  __dirname,
+  '..',
+  'media',
+  approvedVideoUrl
+);
 
 const selectedDirectory = compressedDirectory;
 
@@ -19,22 +24,22 @@ let approvedVideos = fs
   .readdirSync(selectedDirectory)
   .filter((file) => file.endsWith('.mp4'));
 
-  
 // Helper function to get video path
-const getVideoPath = (index) => path.join(selectedDirectory, approvedVideos[index]);
+const getVideoPath = (index) =>
+  path.join(selectedDirectory, approvedVideos[index]);
 
 export const getMainVideo = async (req, res) => {
   console.log('get main video');
   logger.info('getMainVideo called');
 
-  const { videoId } = req.params
-  console.log('videoId', videoId); 
+  const { videoId } = req.params;
+  console.log('videoId', videoId);
 
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const videoPath = getVideoPath(videoId);
   logger.info(`video path: ${videoPath}`);
-  
+
   if (!fs.existsSync(videoPath)) {
     logger.error('Video not found');
     return res.status(404).send('Video not found');
@@ -56,6 +61,7 @@ export const getMainVideo = async (req, res) => {
     console.log('start', start);
     console.log('end', end);
     const chunksize = end - start + 1;
+    console.log('chunksize', chunksize);
     const file = fs.createReadStream(videoPath, { start, end });
     const head = {
       'Content-Range': `bytes ${start}-${end}/${fileSize}`,
@@ -63,7 +69,7 @@ export const getMainVideo = async (req, res) => {
       'Content-Length': chunksize,
       'Content-Type': 'video/mp4',
     };
-
+    console.log('');
     res.writeHead(206, head);
     file.pipe(res);
   } else {
@@ -71,31 +77,11 @@ export const getMainVideo = async (req, res) => {
       'Content-Length': fileSize,
       'Content-Type': 'video/mp4',
     };
-
+    console.log('');
     res.writeHead(200, head);
     fs.createReadStream(videoPath).pipe(res);
   }
 };
-
-// export const getNextMainVideo = async (req, res) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-
-//   const { videoId } = req.params
-//   console.log('videoId', videoId); 
-
-//   logger.info(`getNextMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
-//   res.redirect(`/videos/video/${videoId}`);
-// };
-
-// export const getPreviousMainVideo = async (req, res) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-
-//   const { videoId } = req.params
-//   console.log('videoId', videoId); 
-
-//   logger.info(`getPreviousMainVideo: currentVideoIndex is now ${currentVideoIndex}`);
-//   res.redirect(`/videos/video/${videoId}`);
-// };
 
 
 export const getVideoPreview = async (req, res) => {
