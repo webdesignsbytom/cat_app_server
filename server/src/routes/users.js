@@ -49,8 +49,6 @@ router.delete(
 // Admin
 router.get(
   '/admin/get-all-users',
-  validateAuthentication,
-  validateAdminRole,
   getAllUsersHandler
 );
 router.patch(

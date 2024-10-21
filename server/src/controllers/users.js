@@ -54,15 +54,12 @@ export const getAllUsersHandler = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    myEmitterUsers.emit('get-all-users', req.user);
+    // myEmitterUsers.emit('get-all-users', req.user);
     return sendDataResponse(res, 200, { users: foundUsers });
     //
   } catch (err) {
     // Error
-    const serverError = new ServerErrorEvent(
-      req.user,
-      `Get all users failed: ${err.message}`
-    );
+    const serverError = new ServerErrorEvent(req.user, `Get all users failed`);
     myEmitterErrors.emit('error', serverError);
     sendMessageResponse(res, serverError.code, serverError.message);
     throw err;
@@ -119,14 +116,14 @@ export const registerNewUserHandler = async (req, res) => {
     );
     return sendMessageResponse(res, missingField.code, missingField.message);
   }
-
+  console.log('aaaaaaaa');
   try {
     const foundUser = await findUserByEmail(lowerCaseEmail);
     if (foundUser) {
       return sendDataResponse(res, 400, { message: EVENT_MESSAGES.emailInUse });
     }
 
-    const hashedPassword = await bcrypt.hash(password, process.env.SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const createdUser = await createNewUser(lowerCaseEmail, hashedPassword);
 
@@ -145,10 +142,10 @@ export const registerNewUserHandler = async (req, res) => {
     delete createdUser.updatedAt;
 
     const uniqueString = uuid() + userId;
-    const hashedString = await bcrypt.hash(uniqueString, hashRate);
+    const hashedString = await bcrypt.hash(uniqueString, 10);
 
-    await createVerificationEmailHandler(userId, hashedString);
-    await sendVerificationEmail(userId, createdUser.email, uniqueString);
+    // await createVerificationEmailHandler(userId, hashedString);
+    // await sendVerificationEmail(userId, createdUser.email, uniqueString);
 
     myEmitterUsers.emit('register', createdUser);
     return sendDataResponse(res, 201, { user: createdUser });
@@ -640,7 +637,6 @@ export const adminDeleteUserHandler = async (req, res) => {
     throw err;
   }
 };
-
 
 export const deactivateUserHandler = async (req, res) => {
   const { userId } = req.params;

@@ -3,6 +3,7 @@ import dbClient from '../utils/dbClient.js';
 export const createCatForUser = async (
   userId,
   name,
+  nickname,
   dob,
   breed,
   favouriteFood,
@@ -11,10 +12,11 @@ export const createCatForUser = async (
   return await dbClient.cat.create({
     data: {
       name,
+      nickname,
       dob,
       breed,
       favouriteFood,
-      image,
+      imageUrl: image,
       profile: {
         connect: {
           userId,

@@ -17,6 +17,10 @@ export const uploadToMinio = multer({
   storage: minioStorage,
 }).single('video'); // Assuming the video file field is named 'video'
 
+export const uploadImageToMinio = multer({
+  storage: minioStorage,
+}).single('image');
+
 export const uploadFileToMinIO = async (fileBuffer, fileName) => {
   console.log('>>> uploadFileToMinIO');
   try {
@@ -40,6 +44,29 @@ export const uploadFileToMinIO = async (fileBuffer, fileName) => {
 
     // Return the public URL of the uploaded file
     return `http://${minioEndpoint}:${minioPort}/${bucketName}/${fileName}`;
+  } catch (error) {
+    console.error('Error uploading to MinIO:', error);
+    return null;
+  }
+};
+
+export const uploadImageFileToMinIO = async (fileBuffer, folder, userId) => {
+  try {
+    const fileName = `${folder}${Date.now()}-${userId}-${fileBuffer.originalname}`;
+    const fileStream = Readable.from(fileBuffer.buffer);
+
+    await minioClient.putObject(
+      bucketName,
+      fileName,
+      fileStream,
+      fileBuffer.size,
+      {
+        'Content-Type': fileBuffer.mimetype,
+      }
+    );
+
+    // Return the public URL of the uploaded file
+    return `http://${minioEndpoint}:${minioPort}/${bucketName}${fileName}`;
   } catch (error) {
     console.error('Error uploading to MinIO:', error);
     return null;

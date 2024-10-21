@@ -21,13 +21,19 @@ import {
   NotFoundEvent,
   ServerErrorEvent,
 } from '../event/utils/errorUtils.js';
+import { uploadImageFileToMinIO } from '../middleware/minio.js';
+import { compressImageHelper } from '../utils/compressorHelper.js';
 
 export const addNewCatToUser = async (req, res) => {
   console.log('addNewCatToUser');
-  const { name, dob, breed, favouriteFood, image } = req.body;
+  const { name, dob, breed, favouriteFood, image, nickname } = req.body;
   const { userId } = req.params;
+  console.log('name', name);
 
-  if (!name || !dob || !breed || !favouriteFood || !image || !userId) {
+  const { file } = req;
+  console.log('file', file);
+
+  if (!name || !dob || !breed || !favouriteFood || !userId) {
     const missingFields = new MissingFieldEvent(
       req.user,
       EVENT_MESSAGES.missingFields
@@ -49,13 +55,24 @@ export const addNewCatToUser = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
+    const compressedImageBuffer = await compressImageHelper(file.buffer);
+    file.buffer = compressedImageBuffer;
+
+    const imageUploadResult = await uploadImageFileToMinIO(
+      file,
+      `/images/users/cat-profiles/`,
+      userId
+    );
+    console.log('imageUploadResult', imageUploadResult);
+
     const newCat = await createCatForUser(
       foundUser.id,
       name,
+      nickname,
       new Date(dob),
       breed,
       favouriteFood,
-      image
+      imageUploadResult
     );
 
     console.log('newCat', newCat);

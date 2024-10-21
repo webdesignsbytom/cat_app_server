@@ -86,10 +86,11 @@ model Video {
 model Cat {
   id            String   @id @default(uuid())
   name          String   @default("")
+  nickname      String?
   dob           DateTime @default(now())
   breed         String   @default("")
   favouriteFood String   @default("")
-  image         String   @default("")
+  imageUrl      String   @default("")
   profileId     String
   profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   createdAt     DateTime @default(now())

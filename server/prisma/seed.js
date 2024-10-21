@@ -23,7 +23,8 @@ async function seed() {
               dob: new Date(2020, 1, 1),
               breed: 'Siamese',
               favouriteFood: 'Salmon',
-              image:
+              nickname: `Wik`,
+              imageUrl:
                 'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
@@ -50,7 +51,8 @@ async function seed() {
               dob: new Date(2019, 5, 10),
               breed: 'Persian',
               favouriteFood: 'Chicken',
-              image:
+              nickname: `Wik`,
+              imageUrl:
                 'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
@@ -77,7 +79,8 @@ async function seed() {
               dob: new Date(2018, 10, 20),
               breed: 'Maine Coon',
               favouriteFood: 'Tuna',
-              image:
+              nickname: `Wik`,
+              imageUrl:
                 'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
