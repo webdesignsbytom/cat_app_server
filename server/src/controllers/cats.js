@@ -24,7 +24,7 @@ import {
 import { uploadImageFileToMinIO } from '../middleware/minio.js';
 import { compressImageHelper } from '../utils/compressorHelper.js';
 
-export const addNewCatToUser = async (req, res) => {
+export const addNewCatToUserHandler = async (req, res) => {
   console.log('addNewCatToUser');
   const { name, dob, breed, favouriteFood, image, nickname } = req.body;
   const { userId } = req.params;
@@ -55,15 +55,19 @@ export const addNewCatToUser = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    const compressedImageBuffer = await compressImageHelper(file.buffer);
-    file.buffer = compressedImageBuffer;
+    let imageUploadResult = '';
 
-    const imageUploadResult = await uploadImageFileToMinIO(
-      file,
-      `/images/users/cat-profiles/`,
-      userId
-    );
-    console.log('imageUploadResult', imageUploadResult);
+    if (file) {
+      const compressedImageBuffer = await compressImageHelper(file.buffer);
+      file.buffer = compressedImageBuffer;
+
+      imageUploadResult = await uploadImageFileToMinIO(
+        file,
+        `/images/users/cat-profiles/`,
+        userId
+      );
+      console.log('imageUploadResult', imageUploadResult);
+    }
 
     const newCat = await createCatForUser(
       foundUser.id,
@@ -87,8 +91,8 @@ export const addNewCatToUser = async (req, res) => {
   }
 };
 
-export const getAllUserCatProfiles = async (req, res) => {
-  console.log('getAllUserCatProfiles');
+export const getUserCatsHandler = async (req, res) => {
+  console.log('getUserCatsHandler');
   const { userId } = req.params;
 
   try {
@@ -117,10 +121,13 @@ export const getAllUserCatProfiles = async (req, res) => {
   }
 };
 
-export const updateCatData = async (req, res) => {
+export const updateCatDataHandler = async (req, res) => {
   console.log('updateCatData');
   const { userId, catId } = req.params;
-  const { name, dob, breed, favouriteFood, image } = req.body;
+  const { name, dob, breed, favouriteFood, nickname } = req.body;
+
+  const { file } = req;
+  console.log('file', file);
 
   try {
     const foundUser = await findUserById(userId);
@@ -147,12 +154,27 @@ export const updateCatData = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
+    let imageUploadResult = '';
+
+    if (file) {
+      const compressedImageBuffer = await compressImageHelper(file.buffer);
+      file.buffer = compressedImageBuffer;
+
+      imageUploadResult = await uploadImageFileToMinIO(
+        file,
+        `/images/users/cat-profiles/`,
+        userId
+      );
+      console.log('imageUploadResult', imageUploadResult);
+    }
+
     const updatedCatData = {
       name: name ?? foundCat.name,
+      nickname: nickname ?? foundCat.nickname,
       dob: dob ? new Date(dob) : foundCat.dob,
       breed: breed ?? foundCat.breed,
       favouriteFood: favouriteFood ?? foundCat.favouriteFood,
-      image: image ?? foundCat.image,
+      imageUrl: imageUploadResult ?? foundCat.imageUrl,
     };
 
     const updatedCat = await updateCatById(catId, updatedCatData);
@@ -167,7 +189,7 @@ export const updateCatData = async (req, res) => {
   }
 };
 
-export const deleteCatFromUserProfile = async (req, res) => {
+export const deleteCatFromUserProfileHandler = async (req, res) => {
   console.log('deleteCatFromUserProfile');
   const { userId, catId } = req.params;
 

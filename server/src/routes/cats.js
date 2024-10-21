@@ -1,21 +1,25 @@
 import { Router } from 'express';
 import {
-  addNewCatToUser,
-  deleteCatFromUserProfile,
-  getAllUserCatProfiles,
-  updateCatData,
+  addNewCatToUserHandler,
+  deleteCatFromUserProfileHandler,
+  getUserCatsHandler,
+  updateCatDataHandler,
 } from '../controllers/cats.js';
 // Middleware
 import { uploadImageToMinio } from '../middleware/minio.js';
 
 const router = Router();
 
-router.post('/add-new-user-cat/:userId', uploadImageToMinio, addNewCatToUser);
-router.get('/get-all-users-cat-profiles/:userId', getAllUserCatProfiles);
-router.patch('/update-user-cat-profile/:userId/:catId', updateCatData);
+router.get('/get-all-user-cat-profiles/:userId', getUserCatsHandler);
+router.post(
+  '/add-new-user-cat/:userId',
+  uploadImageToMinio,
+  addNewCatToUserHandler
+);
+router.patch('/update-user-cat-profile/:userId/:catId', uploadImageToMinio, updateCatDataHandler);
 router.delete(
   '/delete-user-cat-profile/:userId/:catId',
-  deleteCatFromUserProfile
+  deleteCatFromUserProfileHandler
 );
 
 export default router;

@@ -14,6 +14,7 @@ import playlistRouter from './routes/playlists.js';
 import videoRouter from './routes/videos.js';
 import uploadRouter from './routes/uploads.js';
 import catRouter from './routes/cats.js';
+import gameRouter from './routes/game.js';
 import testRouter from './routes/tests.js';
 // Responses
 import { sendDataResponse } from './utils/responses.js';
@@ -62,6 +63,7 @@ app.use('/playlists', playlistRouter);
 app.use('/videos', videoRouter);
 app.use('/cats', catRouter);
 app.use('/uploads', uploadRouter);
+app.use('/game', gameRouter);
 app.use('/tests', testRouter);
 
 // Server interface page
@@ -98,12 +100,10 @@ app.use((error, req, res, next) => {
     (error.message.includes('MINIO_SECRET_KEY') ||
       error.message.includes('MINIO_ACCESS_KEY'))
   ) {
-    return res
-      .status(400)
-      .json({
-        message:
-          'MinIO configuration error: Invalid or missing access/secret key',
-      });
+    return res.status(400).json({
+      message:
+        'MinIO configuration error: Invalid or missing access/secret key',
+    });
   }
 
   return sendDataResponse(res, 500, 'Server error event');
