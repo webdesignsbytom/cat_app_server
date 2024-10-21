@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserGameDataHandler } from '../controllers/game.js';
+import { getUserGameDataHandler, resetForNewGameHandler } from '../controllers/game.js';
 import {
   validateAuthentication,
   validateDeveloperRole,
@@ -8,5 +8,6 @@ import {
 const router = Router();
 
 router.get('/get-user-game-data/:gameId', getUserGameDataHandler);
+router.patch('/reset-game-data/:gameId', resetForNewGameHandler);
 
 export default router;

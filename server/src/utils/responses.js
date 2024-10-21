@@ -38,6 +38,7 @@ export const EVENT_MESSAGES = {
   gameTag: `Game database.`,
   gameNotFound: `Failed to find game(s).`,
   gameIdNotFound: `Game ID not found in database.`,
+  resetGameFailed: `Failed to start new game.`,
   createGameFail: `Failed to create new game.`,
   updateGameError: `Failed to update game.`,
   deleteGameError: `Failed to delete game.`,

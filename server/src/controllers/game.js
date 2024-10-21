@@ -8,13 +8,24 @@ import {
   sendDataResponse,
   sendMessageResponse,
 } from '../utils/responses.js';
-import { NotFoundEvent, ServerErrorEvent } from '../event/utils/errorUtils.js';
-import { getUserGameData } from '../domain/game.js';
+import {
+  BadRequestEvent,
+  NotFoundEvent,
+  ServerErrorEvent,
+} from '../event/utils/errorUtils.js';
+import { getUserGameData, resetGameForNewGame } from '../domain/game.js';
+import { StartingGameData } from '../utils/constants.js';
 
 export const getUserGameDataHandler = async (req, res) => {
   console.log('getUserGameDataHandler');
   const { gameId } = req.params;
-  
+
+  if (!gameId) {
+    return sendDataResponse(res, 400, {
+      message: 'Missing gameId.',
+    });
+  }
+
   try {
     const foundData = await getUserGameData(gameId);
     console.log('found data:', foundData);
@@ -42,11 +53,17 @@ export const getUserGameDataHandler = async (req, res) => {
   }
 };
 
-export const startNewGameHandler = async (req, res) => {
-  console.log('startNewGameHandler');
+export const resetForNewGameHandler = async (req, res) => {
+  console.log('resetForNewGameHandler');
+  const { gameId } = req.params;
 
+  if (!gameId) {
+    return sendDataResponse(res, 400, {
+      message: 'Missing gameId.',
+    });
+  }
   try {
-    const foundData = await getUserGameData();
+    const foundData = await getUserGameData(gameId);
     console.log('found data:', foundData);
 
     if (!foundData) {
@@ -59,7 +76,20 @@ export const startNewGameHandler = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    return sendDataResponse(res, 200, { game: foundData });
+    const resetGameData = await resetGameForNewGame(gameId, StartingGameData);
+    console.log('resetGameData', resetGameData);
+
+    if (!resetGameData) {
+      const badRequest = new BadRequestEvent(
+        req.user,
+        EVENT_MESSAGES.badRequest,
+        EVENT_MESSAGES.resetGameFailed
+      );
+      myEmitterErrors.emit('error', badRequest);
+      return sendMessageResponse(res, badRequest.code, badRequest.message);
+    }
+
+    return sendDataResponse(res, 200, { game: resetGameData });
   } catch (err) {
     //
     const serverError = new ServerErrorEvent(
