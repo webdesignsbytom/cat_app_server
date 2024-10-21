@@ -5,11 +5,27 @@ export const findAllUsers = () =>
     orderBy: {
       createdAt: 'desc',
     },
+    include: {
+      profile: {
+        include: {
+          cats: true,
+          game: true,
+        },
+      },
+    },
   });
 
 export const findUserByEmail = (email) =>
   dbClient.user.findUnique({
     where: { email },
+    include: {
+      profile: {
+        include: {
+          cats: true,
+          game: true,
+        },
+      },
+    },
   });
 
 export const findUsersByRole = (role) =>
@@ -24,6 +40,13 @@ export const createNewUser = (email, password) =>
     data: {
       email,
       password,
+      profile: {
+        create: {
+          game: {
+            create: {},
+          },
+        },
+      },
     },
   });
 
@@ -51,8 +74,8 @@ export const findUserById = (userId) =>
       id: userId,
     },
     include: {
-      profile: true
-    }
+      profile: true,
+    },
   });
 
 export const resetUserPassword = (userId, password) =>

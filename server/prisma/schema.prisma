@@ -37,6 +37,7 @@ model Profile {
   lastName  String @default("")
   country   String @default("")
   cats      Cat[]
+  game      Game?
   userId    String @unique
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -97,6 +98,18 @@ model Cat {
   updatedAt     DateTime @updatedAt
 
   @@index([profileId])
+}
+
+model Game {
+  id           String    @id @default(uuid())
+  name         String    @default("")
+  health       Int       @default(100)
+  intelligence Int       @default(100)
+  hunger       Int       @default(100)
+  profileId    String    @unique
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
 }
 
 // EVENTS

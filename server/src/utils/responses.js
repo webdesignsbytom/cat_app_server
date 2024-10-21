@@ -34,6 +34,13 @@ export const EVENT_MESSAGES = {
   eventTag: `Event database.`,
   eventNotFound: `Failed to find event.`,
   createEventFail: `Failed to create event.`,
+  // Games
+  gameTag: `Game database.`,
+  gameNotFound: `Failed to find game(s).`,
+  gameIdNotFound: `Game ID not found in database.`,
+  createGameFail: `Failed to create new game.`,
+  updateGameError: `Failed to update game.`,
+  deleteGameError: `Failed to delete game.`,
   // Playlists
   playlistTag: `Playlist database.`,
   playlistNotFound: `Failed to find playlist(s).`,

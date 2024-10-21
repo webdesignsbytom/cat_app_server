@@ -7,11 +7,6 @@ import {
 
 const router = Router();
 
-router.get(
-  '/get-user-game-data',
-  validateAuthentication,
-  validateDeveloperRole,
-  getUserGameDataHandler
-);
+router.get('/get-user-game-data/:gameId', getUserGameDataHandler);
 
 export default router;
