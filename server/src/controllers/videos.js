@@ -312,8 +312,8 @@ export const permanentlyDeleteVideoHelper = async (req, res) => {
 
     await removeVideoFromBucket(objectName);
     console.log('PPPPPPPPPPPPPPPP');
-    // const deletedVideo = await deleteVideoById(videoId);
-    // console.log('updated Video:', deletedVideo);
+    const deletedVideo = await deleteVideoById(videoId);
+    console.log('updated Video:', deletedVideo);
 
     return sendDataResponse(res, 200, { deletedVideo: deletedVideo });
   } catch (err) {
