@@ -35,6 +35,7 @@ router.patch(
   validateAdminRole,
   reactivateUserHandler
 );
+
 // Verification
 router.patch('/verify-email/:userId/:uniqueString', verifyUserEmailHandler);
 router.post(
@@ -46,9 +47,12 @@ router.delete(
   validateAuthentication,
   deleteUserAccountHandler
 );
+
 // Admin
 router.get(
   '/admin/get-all-users',
+  validateAuthentication,
+  validateAdminRole,
   getAllUsersHandler
 );
 router.patch(
@@ -58,7 +62,7 @@ router.patch(
   changeUserRoleHandler
 );
 router.delete(
-  '/admin/delete-user-by-id',
+  '/admin/delete-user-by-id/:userId',
   validateAuthentication,
   validateAdminRole,
   adminDeleteUserHandler

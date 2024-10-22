@@ -511,7 +511,7 @@ export const updateUserDataHandler = async (req, res) => {
 };
 
 export const deleteUserAccountHandler = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id;
 
   if (!userId) {
     return sendDataResponse(res, 204, {
@@ -521,6 +521,7 @@ export const deleteUserAccountHandler = async (req, res) => {
 
   try {
     const foundUser = await findUserById(userId);
+
     if (!foundUser) {
       const notFound = new NotFoundEvent(
         req.user,
@@ -531,7 +532,7 @@ export const deleteUserAccountHandler = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    if (userId !== foundUser.userId) {
+    if (userId !== foundUser.id) {
       return sendDataResponse(res, 400, {
         message: 'User ID does not match.',
       });
@@ -549,7 +550,7 @@ export const deleteUserAccountHandler = async (req, res) => {
     }
 
     return sendDataResponse(res, 200, {
-      message: `User ${foundUser.email} deleted successfully.`,
+      message: `User deleted successfully.`,
     });
   } catch (err) {
     //
@@ -592,7 +593,7 @@ export const changeUserRoleHandler = async (req, res) => {
 };
 
 export const adminDeleteUserHandler = async (req, res) => {
-  const userId = req.user.id;
+  const { userId } = req.params;
 
   if (!userId) {
     return sendDataResponse(res, 204, {
