@@ -15,7 +15,10 @@ import {
   sendMessageResponse,
 } from '../utils/responses.js';
 import { NotFoundEvent, ServerErrorEvent } from '../event/utils/errorUtils.js';
-import { moveVideoToApprovedBucket } from '../utils/minioConfig.js';
+import {
+  moveVideoToApprovedBucket,
+  removeVideoFromBucket,
+} from '../middleware/minio.js';
 
 export const getAllVideosHelper = async (req, res) => {
   console.log('get all Videos');
@@ -197,14 +200,13 @@ export const approvePendingVideoHelper = async (req, res) => {
     const sourceBucket = 'videos'; // The bucket is 'videos'
     const objectName = `review/${urlParts.pathname.split('/').pop()}`; // Extract filename and prepend 'review/'
 
-
     console.log('videoUrl', videoUrl);
     console.log('urlParts', urlParts);
     console.log('sourceBucket', sourceBucket);
     console.log('objectName', objectName);
 
     const destinationBucket = 'videos'; // Same bucket, just moving to approved folder
-    
+
     const newBucket = await moveVideoToApprovedBucket(
       sourceBucket,
       destinationBucket,
@@ -296,8 +298,22 @@ export const permanentlyDeleteVideoHelper = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    const deletedVideo = await deleteVideoById(videoId);
-    console.log('updated Video:', deletedVideo);
+    // Parse the video URL to extract bucket and object name
+    const videoUrl = foundVideo.path;
+    const urlParts = new URL(videoUrl);
+    console.log('urlParts', urlParts);
+    // Remove '/catapp' from the start of the pathname
+    const updatedPathname = urlParts.pathname.replace('/catapp', '');
+
+    // Extract the full path after '/catapp', keeping directories and filename
+    const objectName = updatedPathname.startsWith('/') ? updatedPathname.slice(1) : updatedPathname;
+    
+    console.log('objectName', objectName);
+
+    await removeVideoFromBucket(objectName);
+    console.log('PPPPPPPPPPPPPPPP');
+    // const deletedVideo = await deleteVideoById(videoId);
+    // console.log('updated Video:', deletedVideo);
 
     return sendDataResponse(res, 200, { deletedVideo: deletedVideo });
   } catch (err) {
