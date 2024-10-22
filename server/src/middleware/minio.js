@@ -116,6 +116,30 @@ export const moveVideoToApprovedBucket = async (
   }
 };
 
+export const moveVideoToDeletedBucket = async (objectName) => {
+  try {
+    console.log('TTTTTTTTTTTTTTTTTTTT', bucketName, `${objectName}`);
+
+    const fileName = objectName.split('/').pop(); // e.g., 'cat_video5.mp4'
+    console.log('FILENAME AAA', fileName);
+    const copySource = `/${bucketName}/${objectName}`; // Correct source path with leading '/'
+
+    await minioClient.copyObject(
+      bucketName, // catapp
+      `videos/deleted/${fileName}`, // videos/deleted/cat_video6.mp4
+      copySource // /catapp/videos/review/cat_video6.mp4
+    );
+
+    await minioClient.removeObject(bucketName, `${objectName}`); // review/cat_video6.mp4
+    const newUrl = `http://${minioEndpoint}:${minioPort}/${bucketName}/videos/deleted/${fileName}`;
+
+    return newUrl;
+  } catch (err) {
+    console.error('Error deleting video:', err);
+    throw err;
+  }
+};
+
 export const removeVideoFromBucket = async (objectName) => {
   try {
     console.log('>>>>', bucketName, `${objectName}`);

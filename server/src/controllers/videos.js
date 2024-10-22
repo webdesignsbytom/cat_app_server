@@ -17,6 +17,7 @@ import {
 import { NotFoundEvent, ServerErrorEvent } from '../event/utils/errorUtils.js';
 import {
   moveVideoToApprovedBucket,
+  moveVideoToDeletedBucket,
   removeVideoFromBucket,
 } from '../middleware/minio.js';
 
@@ -214,8 +215,11 @@ export const approvePendingVideoHelper = async (req, res) => {
     );
     console.log('newBucket', newBucket);
 
-    const updatedVideo = await updateVideoStatus(videoId, 'APPROVED');
-    console.log('updated Video:', updatedVideo);
+    const updatedVideo = await updateVideoStatus(
+      videoId,
+      'APPROVED',
+      newBucket
+    );
 
     return sendDataResponse(res, 200, { updatedVideo: updatedVideo });
   } catch (err) {
@@ -256,7 +260,24 @@ export const setVideoAsDeletedHelper = async (req, res) => {
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
 
-    const updatedVideo = await updateVideoStatus(videoId, 'DELETED');
+    // Parse the video URL to extract bucket and object name
+    const videoUrl = foundVideo.path;
+    const urlParts = new URL(videoUrl);
+
+    // Remove '/catapp' from the start of the pathname
+    const updatedPathname = urlParts.pathname.replace('/catapp', '');
+
+    // Extract the full path after '/catapp', keeping directories and filename
+    const objectName = updatedPathname.startsWith('/')
+      ? updatedPathname.slice(1)
+      : updatedPathname;
+
+    console.log('>>> objectName', objectName);
+
+    const updatedBucket = await moveVideoToDeletedBucket(objectName);
+    console.log('updatedBUCKWR', updatedBucket);
+
+    const updatedVideo = await updateVideoStatus(videoId, 'DELETED', updatedBucket);
     console.log('updated Video:', updatedVideo);
 
     return sendDataResponse(res, 200, { updatedVideo: updatedVideo });
@@ -273,10 +294,7 @@ export const setVideoAsDeletedHelper = async (req, res) => {
 };
 
 export const permanentlyDeleteVideoHelper = async (req, res) => {
-  console.log('permanentlyDeleteVideoHelper');
-
   const { videoId } = req.params;
-  console.log('videoId: ' + videoId);
 
   if (!videoId) {
     return sendDataResponse(res, 400, {
@@ -287,7 +305,6 @@ export const permanentlyDeleteVideoHelper = async (req, res) => {
   try {
     const foundVideo = await findVideoById(videoId);
 
-    console.log('found Videos:', foundVideo);
     if (!foundVideo) {
       const notFound = new NotFoundEvent(
         req.user,
@@ -301,19 +318,18 @@ export const permanentlyDeleteVideoHelper = async (req, res) => {
     // Parse the video URL to extract bucket and object name
     const videoUrl = foundVideo.path;
     const urlParts = new URL(videoUrl);
-    console.log('urlParts', urlParts);
+
     // Remove '/catapp' from the start of the pathname
     const updatedPathname = urlParts.pathname.replace('/catapp', '');
 
     // Extract the full path after '/catapp', keeping directories and filename
-    const objectName = updatedPathname.startsWith('/') ? updatedPathname.slice(1) : updatedPathname;
-    
-    console.log('objectName', objectName);
+    const objectName = updatedPathname.startsWith('/')
+      ? updatedPathname.slice(1)
+      : updatedPathname;
 
+    console.log('>>> objectName', objectName);
     await removeVideoFromBucket(objectName);
-    console.log('PPPPPPPPPPPPPPPP');
     const deletedVideo = await deleteVideoById(videoId);
-    console.log('updated Video:', deletedVideo);
 
     return sendDataResponse(res, 200, { deletedVideo: deletedVideo });
   } catch (err) {

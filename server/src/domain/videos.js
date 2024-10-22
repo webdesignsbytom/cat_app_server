@@ -22,12 +22,12 @@ export const findAllVideosByStatus = (status) =>
     },
   });
 
-export const updateVideoStatus = (id, status) =>
+export const updateVideoStatus = (id, status, newPath) =>
   dbClient.video.update({
     where: {
       id: id,
     },
-    data: { videoStatus: status },
+    data: { videoStatus: status, path: newPath },
   });
 
 export const deleteVideoById = (id) =>
