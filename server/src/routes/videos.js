@@ -16,10 +16,8 @@ import {
 
 const router = Router();
 
-router.get('/get-all-video-items', getAllVideosHelper);
-// router.get('/get-cotd-playlist', getCotdPlalistHelper);
-
 // Admin //
+router.get('/get-all-video-items', getAllVideosHelper);
 router.get('/admin/get-all-approved-videos', getAllApprovedVideosHelper);
 router.get('/admin/get-videos-to-review', getAllVideosToReviewHelper);
 router.get('/admin/get-deleted-videos', getAllDeletedVideosHelper);

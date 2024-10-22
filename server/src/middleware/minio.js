@@ -1,5 +1,4 @@
 import multer from 'multer';
-import { extname } from 'path';
 import { Readable } from 'stream';
 // Config
 import {
@@ -15,34 +14,31 @@ const minioStorage = multer.memoryStorage();
 // Middelware component
 export const uploadToMinio = multer({
   storage: minioStorage,
-}).single('video'); // Assuming the video file field is named 'video'
+}).single('video');
 
 export const uploadImageToMinio = multer({
   storage: minioStorage,
 }).single('image');
 
+
 export const uploadFileToMinIO = async (fileBuffer, fileName) => {
-  console.log('>>> uploadFileToMinIO');
   try {
-    // Ensure fileBuffer is a Buffer
+
     if (!(fileBuffer.buffer instanceof Buffer)) {
       throw new Error('fileBuffer must be a Buffer');
     }
 
-    const fileStream = Readable.from(fileBuffer.buffer); // Convert the buffer to a streamconsole.log('fileStream', fileStream);
+    const fileStream = Readable.from(fileBuffer.buffer);
     await minioClient.putObject(
       bucketName,
       fileName,
       fileStream,
       fileBuffer.length,
       {
-        'Content-Type': 'video/mp4', // Assuming mp4 as the format
+        'Content-Type': 'video/mp4', 
       }
     );
 
-    console.log('>>> FILENAME', fileName);
-
-    // Return the public URL of the uploaded file
     return `http://${minioEndpoint}:${minioPort}/${bucketName}/${fileName}`;
   } catch (error) {
     console.error('Error uploading to MinIO:', error);
@@ -65,7 +61,6 @@ export const uploadImageFileToMinIO = async (fileBuffer, folder, userId) => {
       }
     );
 
-    // Return the public URL of the uploaded file
     return `http://${minioEndpoint}:${minioPort}/${bucketName}${fileName}`;
   } catch (error) {
     console.error('Error uploading to MinIO:', error);

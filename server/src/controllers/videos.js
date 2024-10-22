@@ -15,6 +15,7 @@ import {
   sendMessageResponse,
 } from '../utils/responses.js';
 import { NotFoundEvent, ServerErrorEvent } from '../event/utils/errorUtils.js';
+import { moveVideoToApprovedBucket } from '../utils/minioConfig.js';
 
 export const getAllVideosHelper = async (req, res) => {
   console.log('get all Videos');
@@ -135,9 +136,8 @@ export const getAllDeletedVideosHelper = async (req, res) => {
 
 export const getVideoByIdHelper = async (req, res) => {
   console.log('getVideoByIdHelper');
-  const { videoId } = req.params
+  const { videoId } = req.params;
 
-  
   if (!videoId) {
     return sendDataResponse(res, 400, {
       message: 'Missing videoId.',
@@ -173,12 +173,14 @@ export const getVideoByIdHelper = async (req, res) => {
 
 export const approvePendingVideoHelper = async (req, res) => {
   console.log('approvePendingVideoHelper');
+
   const { videoId } = req.params;
   console.log('videoId: ' + videoId);
+
   try {
     const foundVideo = await findVideoById(videoId);
-
     console.log('found Videos:', foundVideo);
+
     if (!foundVideo) {
       const notFound = new NotFoundEvent(
         req.user,
@@ -188,6 +190,27 @@ export const approvePendingVideoHelper = async (req, res) => {
       myEmitterErrors.emit('error', notFound);
       return sendMessageResponse(res, notFound.code, notFound.message);
     }
+
+    // Parse the video URL to extract bucket and object name
+    const videoUrl = foundVideo.path;
+    const urlParts = new URL(videoUrl);
+    const sourceBucket = 'videos'; // The bucket is 'videos'
+    const objectName = `review/${urlParts.pathname.split('/').pop()}`; // Extract filename and prepend 'review/'
+
+
+    console.log('videoUrl', videoUrl);
+    console.log('urlParts', urlParts);
+    console.log('sourceBucket', sourceBucket);
+    console.log('objectName', objectName);
+
+    const destinationBucket = 'videos'; // Same bucket, just moving to approved folder
+    
+    const newBucket = await moveVideoToApprovedBucket(
+      sourceBucket,
+      destinationBucket,
+      objectName
+    );
+    console.log('newBucket', newBucket);
 
     const updatedVideo = await updateVideoStatus(videoId, 'APPROVED');
     console.log('updated Video:', updatedVideo);
