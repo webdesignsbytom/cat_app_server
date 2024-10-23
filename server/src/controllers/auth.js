@@ -74,7 +74,7 @@ export const googleLoginHelper = async (req, res) => {
     res.header('Referrer-Policy', 'no-referrer-when-downgrade') // for http only
 
     // Redirect url to send the client
-    const redirectUrl = 'http://127.0.0.1:4000/oauth'
+    const redirectUrl = `http://127.0.0.1:${process.env.PORT}/oauth`
 
     const oAuth2Client = new OAuth2Client(
       process.env.CLIENT_ID,

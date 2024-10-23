@@ -49,7 +49,7 @@ app.use(
 );
 
 // Set the port and URl
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 const HTTP_URL = process.env.HTTP_URL || 'http://localhost:';
 
 // Create path to HTML
