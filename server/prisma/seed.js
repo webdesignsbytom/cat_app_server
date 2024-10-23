@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import dbClient from '../src/utils/dbClient.js';
 
-const bucketUrl = 'localhost:9000';
+const bucketUrl = '192.168.1.150:9000';
 
 async function seed() {
   const password = await bcrypt.hash('123', 8);
