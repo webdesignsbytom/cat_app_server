@@ -23,9 +23,9 @@ import {
 import { minioClient } from '../utils/minioConfig.js';
 
 export const getVideoStreamHelper = async (req, res) => {
+  console.log('');
   console.log('req.headers', req.headers);
-  console.log('getVideoStreamHelper');
-  
+
   res.setHeader(
     'Content-Security-Policy',
     "media-src 'self' *; default-src 'self';"
@@ -41,9 +41,6 @@ export const getVideoStreamHelper = async (req, res) => {
   res.setHeader('Connection', 'keep-alive');
 
   const { bucket, folder, videoName } = req.query;
-  console.log('Bucket: ', bucket);
-  console.log('Folder: ', folder);
-  console.log('Video Name: ', videoName);
 
   try {
     // Ensure there is a range request
@@ -52,31 +49,35 @@ export const getVideoStreamHelper = async (req, res) => {
       return res.status(400).send('Requires Range header');
     }
 
-    console.log('range', range);
+    // Construct the full video path in MinIO
+    const objectName = `${folder}/${videoName}`;
+
+    console.log('>> Range', range);
+    const CHUNK_SIZE = 512 * 1024; // 512 KB per chunk, adjust as needed
+
+    const stat = await minioClient.statObject(bucket, objectName);
+    const videoSize = stat.size;
+    console.log('>> Video Size', videoSize);
 
     // Correctly parse the range header
     const rangeMatch = range.match(/bytes=(\d+)-(\d*)/);
+    console.log('>> RangeMactch', rangeMatch);
+
     const start = rangeMatch ? parseInt(rangeMatch[1], 10) : 0;
     const end =
       rangeMatch && rangeMatch[2]
         ? parseInt(rangeMatch[2], 10)
         : Math.min(start + CHUNK_SIZE, videoSize - 1);
 
-    console.log('start:', start);
-    console.log('end', end);
-
-    // Construct the full video path in MinIO
-    const objectName = `${folder}/${videoName}`;
+    console.log('>> Start:', start);
+    console.log('>> End', end);
 
     // Get object stats (size) from MinIO
-    const stat = await minioClient.statObject(bucket, objectName);
-    const videoSize = stat.size;
-
-    console.log('Video size:', videoSize);
+    console.log('>> Video size:', videoSize);
 
     // Create response headers
     const contentLength = end - start + 1;
-    console.log('content length', contentLength);
+    console.log('>> Content length', contentLength);
 
     const headers = {
       'Content-Range': `bytes ${start}-${end}/${videoSize}`,
@@ -87,8 +88,8 @@ export const getVideoStreamHelper = async (req, res) => {
       'Last-Modified': stat.lastModified, // Include last modified date
     };
 
-    console.log('Headers:', headers);
-
+    console.log('>> Headers:', headers);
+    console.log('');
     // Send headers for partial content
     res.writeHead(206, headers);
 
