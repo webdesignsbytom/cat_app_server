@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import dbClient from '../src/utils/dbClient.js';
 
-const bucketUrl = '192.168.1.150:9000';
+const bucketUrl = process.env.MINIO_BUCKET_URL;
 
 async function seed() {
   const password = await bcrypt.hash('123', 8);
@@ -25,7 +25,7 @@ async function seed() {
               favouriteFood: 'Salmon',
               nickname: `Wik`,
               imageUrl:
-                'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
+                'httpss://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
         },
@@ -53,7 +53,7 @@ async function seed() {
               favouriteFood: 'Chicken',
               nickname: `Wik`,
               imageUrl:
-                'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
+                'httpss://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
         },
@@ -81,7 +81,7 @@ async function seed() {
               favouriteFood: 'Tuna',
               nickname: `Wik`,
               imageUrl:
-                'https://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
+                'httpss://github.com/webdesignsbytom/Cat-App/blob/master/src/assets/images/background/small_cat_blue_2.png?raw=true',
             },
           },
         },
@@ -94,7 +94,7 @@ async function seed() {
       label: 'Cat Video 1',
       name: 'cat_video_1',
       videoStatus: 'APPROVED',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video1.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video1.mp4`,
       size: 150000000,
       duration: 120.5,
       codec: 'H.264',
@@ -105,7 +105,7 @@ async function seed() {
       label: 'Cat Video 2',
       name: 'cat_video_2',
       videoStatus: 'APPROVED',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video2.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video2.mp4`,
       size: 200000000,
       duration: 150.0,
       codec: 'H.265',
@@ -116,7 +116,7 @@ async function seed() {
       label: 'Cat Video 3',
       name: 'cat_video_3',
       videoStatus: 'APPROVED',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video3.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video3.mp4`,
       size: 300000000,
       duration: 180.0,
       codec: 'H.264',
@@ -127,7 +127,7 @@ async function seed() {
       label: 'Cat Video 4',
       name: 'cat_video_4',
       videoStatus: 'APPROVED',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video4.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video4.mp4`,
       size: 250000000,
       duration: 200.0,
       codec: 'H.264',
@@ -138,7 +138,7 @@ async function seed() {
       label: 'Cat Video 5',
       name: 'cat_video_5',
       videoStatus: 'PENDING',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video5.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video5.mp4`,
       size: 180000000,
       duration: 160.0,
       codec: 'H.265',
@@ -149,7 +149,7 @@ async function seed() {
       label: 'Cat Video 6',
       name: 'cat_video_6',
       videoStatus: 'PENDING',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video6.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video6.mp4`,
       size: 250000000,
       duration: 200.0,
       codec: 'H.264',
@@ -160,7 +160,7 @@ async function seed() {
       label: 'Cat Video 7',
       name: 'cat_video_7',
       videoStatus: 'PENDING',
-      path: `http://${bucketUrl}/catapp/videos/review/cat_video7.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/review/cat_video7.mp4`,
       size: 180000000,
       duration: 160.0,
       codec: 'H.265',
@@ -171,7 +171,7 @@ async function seed() {
       label: 'Cat Video 8',
       name: 'cat_video_8',
       videoStatus: 'DELETED',
-      path: `http://${bucketUrl}/catapp/videos/deleted/cat_video8.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/deleted/cat_video8.mp4`,
       size: 180000000,
       duration: 160.0,
       codec: 'H.265',
@@ -182,7 +182,7 @@ async function seed() {
       label: 'Cat Video 9',
       name: 'cat_video_9',
       videoStatus: 'DELETED',
-      path: `http://${bucketUrl}/catapp/videos/deleted/cat_video9.mp4`,
+      path: `https://${bucketUrl}/catapp/videos/deleted/cat_video9.mp4`,
       size: 180000000,
       duration: 160.0,
       codec: 'H.265',

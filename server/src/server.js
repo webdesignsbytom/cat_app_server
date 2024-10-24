@@ -28,7 +28,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(
   cors({
-    origin: 'http://localhost:8100', // Allow requests from frontend
+    origin: '*', // Allow requests from frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   })
