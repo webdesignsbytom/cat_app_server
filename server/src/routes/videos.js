@@ -7,7 +7,7 @@ import {
   getAllVideosToReviewHelper,
   getVideoByIdHelper,
   permanentlyDeleteVideoHelper,
-  setVideoAsDeletedHelper,
+  setVideoAsDeletedHelper,getVideoStreamHelper
 } from '../controllers/videos.js';
 import {
   validateAuthentication,
@@ -16,6 +16,7 @@ import {
 
 const router = Router();
 
+router.get('/get-video-stream', getVideoStreamHelper);
 // Admin //
 router.get('/get-all-video-items', getAllVideosHelper);
 router.get('/admin/get-all-approved-videos', getAllApprovedVideosHelper);

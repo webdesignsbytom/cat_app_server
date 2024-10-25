@@ -20,6 +20,115 @@ import {
   moveVideoToDeletedBucket,
   removeVideoFromBucket,
 } from '../middleware/minio.js';
+import { minioClient } from '../utils/minioConfig.js';
+
+export const getVideoStreamHelper = async (req, res) => {
+  console.log('');
+  console.log('req.headers', req.headers);
+
+  res.setHeader(
+    'Content-Security-Policy',
+    "media-src 'self' *; default-src 'self';"
+  );
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('X-Frame-Options', 'DENY'); // Prevent clickjacking
+  res.setHeader('X-Content-Type-Options', 'nosniff'); // Prevent MIME type sniffing
+  res.setHeader(
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains'
+  ); // Enforce HTTPS
+  res.setHeader('Connection', 'keep-alive');
+
+  const { bucket, folder, videoName } = req.query;
+
+  try {
+    // Ensure there is a range request
+    const range = req.headers.range;
+    if (!range) {
+      return res.status(400).send('Requires Range header');
+    }
+
+    // Construct the full video path in MinIO
+    const objectName = `${folder}/${videoName}`;
+
+    console.log('>> Range', range);
+    const CHUNK_SIZE = 512 * 1024; // 512 KB per chunk, adjust as needed
+
+    const stat = await minioClient.statObject(bucket, objectName);
+    const videoSize = stat.size;
+    console.log('>> Video Size', videoSize);
+
+    // Correctly parse the range header
+    const rangeMatch = range.match(/bytes=(\d+)-(\d*)/);
+    console.log('>> RangeMactch', rangeMatch);
+
+    const start = rangeMatch ? parseInt(rangeMatch[1], 10) : 0;
+    const end =
+      rangeMatch && rangeMatch[2]
+        ? parseInt(rangeMatch[2], 10)
+        : Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+    console.log('>> Start:', start);
+    console.log('>> End', end);
+
+    // Get object stats (size) from MinIO
+    console.log('>> Video size:', videoSize);
+
+    // Create response headers
+    const contentLength = end - start + 1;
+    console.log('>> Content length', contentLength);
+
+    const headers = {
+      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': contentLength,
+      'Content-Type': stat.metaData['content-type'] || 'video/mp4',
+      'Cache-Control': 'public, max-age=31536000', // Cache for one year
+      'Last-Modified': stat.lastModified, // Include last modified date
+    };
+
+    console.log('>> Headers:', headers);
+    // Send headers for partial content
+    res.writeHead(206, headers);
+
+    // Stream the video chunk from MinIO
+    const videoStream = await minioClient.getPartialObject(
+      bucket,
+      objectName,
+      start,
+      contentLength
+    );
+
+    // Listen for the 'close' event to handle early client disconnection
+    res.on('close', () => {
+      console.log('Client disconnected early.');
+      videoStream.destroy(); // Clean up the stream if the client disconnects
+    });
+
+    // Pipe the stream to the response
+    videoStream.on('data', (chunk) => {
+      console.log('Sending chunk:', chunk.length);
+    });
+
+    videoStream
+      .pipe(res)
+      .on('finish', () => {
+        console.log('Video stream finished sending');
+      })
+      .on('error', (err) => {
+        console.error('Stream error:', err);
+        if (!res.headersSent) {
+          res.status(500).send('Error streaming video');
+        }
+      });
+  } catch (err) {
+    console.error('Error fetching video stream:', err);
+    if (!res.headersSent) {
+      res.status(500).send('Error streaming video');
+    }
+  }
+};
 
 export const getAllVideosHelper = async (req, res) => {
   console.log('get all Videos');
@@ -277,7 +386,11 @@ export const setVideoAsDeletedHelper = async (req, res) => {
     const updatedBucket = await moveVideoToDeletedBucket(objectName);
     console.log('updatedBUCKWR', updatedBucket);
 
-    const updatedVideo = await updateVideoStatus(videoId, 'DELETED', updatedBucket);
+    const updatedVideo = await updateVideoStatus(
+      videoId,
+      'DELETED',
+      updatedBucket
+    );
     console.log('updated Video:', updatedVideo);
 
     return sendDataResponse(res, 200, { updatedVideo: updatedVideo });

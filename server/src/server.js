@@ -26,13 +26,13 @@ const app = express();
 
 // Add middleware //
 app.disable('x-powered-by');
-app.use(
-  cors({
-    origin: '*', // Allow requests from frontend
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: 'http://localhost:8100',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Range'],
+  exposedHeaders: ['Content-Length', 'Content-Range'],  
+}));
 
 app.use(morgan('dev'));
 app.use(express.json({ limit: '200kb' }));
