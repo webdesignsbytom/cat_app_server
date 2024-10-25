@@ -89,7 +89,6 @@ export const getVideoStreamHelper = async (req, res) => {
     };
 
     console.log('>> Headers:', headers);
-    console.log('');
     // Send headers for partial content
     res.writeHead(206, headers);
 
